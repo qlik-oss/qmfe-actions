@@ -1,0 +1,58 @@
+name: "Upload qmfe to AWS S3"
+description: "Uploads a qmfe package to an AWS S3 bucket. The S3 url will be s3://<bucket>/<s3-key>/<qmfe-id>/<version>/"
+author: "anders.nilsson@qlik.com"
+
+inputs:
+  aws-bucket-name:
+    description: "The bucket to sync. e.g qcs-prod-cdn.qlikcloud.com"
+    required: true
+  aws-access-key-id:
+    description: "AWS credentials for S3 bucket"
+    required: true
+  aws-secret-access-key:
+    description: "Access key for the stage CDN"
+    required: true
+  qmfe-id:
+    description: "the id of the qmfe component(s), typically the repository where it lives. e.g. hub, management-console"
+    required: true
+  version:
+    description: "Version of the component to update to, without a 'v' prefix"
+    required: true
+  source:
+    description: "The folder that should be uploaded to the CDN. Generally './dist'"
+    required: true
+  s3-key:
+    description: "The S3 folder to which upload should go into"
+    required: false
+    default: qmfe
+  aws-region:
+    description: "AWS region for the S3 bucket"
+    required: false
+    default: "us-east-1"
+  with-delete:
+    description: "If aws sync command should be run with the --delete flag"
+    required: false
+  dry-run:
+    description: "Run action without actually uploading"
+    required: false
+    default: "false"
+  cache-control:
+    description: "Cache control headers"
+    required: false
+    default: "public,max-age=31536000,s-maxage=2629800,immutable"
+
+runs:
+  using: docker
+  image: Dockerfile
+  env:
+    AWS_BUCKET_NAME: ${{ inputs.aws-bucket-name }}
+    AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+    AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
+    QMFE_ID: ${{ inputs.qmfe-id }}
+    VERSION: ${{ inputs.version }}
+    SOURCE: ${{ inputs.source }}
+    S3_KEY: ${{ inputs.s3-key }}
+    AWS_REGION: ${{ inputs.aws-region }}
+    WITH_DELETE: ${{ inputs.with-delete }}
+    DRY_RUN: ${{ inputs.dry-run }}
+    CACHE_CONTROL: ${{ inputs.cache-control }}
