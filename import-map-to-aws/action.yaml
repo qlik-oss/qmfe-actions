@@ -1,0 +1,63 @@
+name: "Upload import-map.json to AWS S3"
+description: "Uploads an import-map.json to an AWS S3 bucket. The S3 url will be s3://<bucket>/<s3-key>/<qmfe-id>/<version>/"
+author: "anders.nilsson@qlik.com"
+
+inputs:
+  aws-bucket-name:
+    description: "The bucket to upload to"
+    required: true
+  aws-access-key-id:
+    description: "AWS credentials for S3 bucket"
+    required: true
+  aws-secret-access-key:
+    description: "Access key for the stage CDN"
+    required: true
+  import-map-url:
+    description: "Cloudfront url to import-map.json"
+    required: true
+  aws-distribution-id:
+    description: "Set this to invalidate cache in cloudfront for import-map"
+    required: false
+  s3-key:
+    description: "S3 key (folder) where import-map should be uploaded to"
+    required: false
+    default: qmfe
+  exclude:
+    description: 'import-map entries to exclude in a comma separated string e.g. "@qmfe/hub,@qmfe/automations", escape string with double quotes'
+    required: false
+  transform:
+    description: "Transform regex to apply on the full import map using the sed command"
+    required: false
+  aws-region:
+    description: "AWS region for the S3 bucket"
+    required: false
+    default: "us-east-1"
+  dry-run:
+    description: "Run action without actually uploading"
+    required: false
+    default: "false"
+  cache-control:
+    description: "cache-control to set on the import-map"
+    required: false
+    default: "public,max-age=5,s-maxage=300"
+  file-name:
+    description: "file name of import-map"
+    required: false
+    default: "import-map.json"
+
+runs:
+  using: docker
+  image: Dockerfile
+  env:
+    AWS_BUCKET_NAME: ${{ inputs.aws-bucket-name }}
+    AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+    AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
+    AWS_DISTRIBUTION_ID: ${{ inputs.aws-distribution-id }}
+    IMPORT_MAP_URL: ${{ inputs.import-map-url }}
+    S3_KEY: ${{ inputs.s3-key }}
+    EXCLUDE: ${{ inputs.exclude }}
+    TRANSFORM: ${{ inputs.transform }}
+    AWS_REGION: ${{ inputs.aws-region }}
+    DRY_RUN: ${{ inputs.dry-run }}
+    CACHE_CONTROL: ${{ inputs.cache-control }}
+    FILE_NAME: ${{ inputs.file-name }}
