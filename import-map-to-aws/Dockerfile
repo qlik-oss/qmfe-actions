@@ -2,7 +2,7 @@
 FROM amazon/aws-cli:2.2.9
 
 # add jq to image
-RUN apk add --no-cache jq
+RUN yum install jq -y
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY entrypoint.sh /entrypoint.sh
