@@ -1,0 +1,22 @@
+name: "Remove cancelled job"
+description: "Removes the last previously cancelled workflow job. Used to keep action history clean when scheduled jobs are cancelled"
+author: "anders.nilsson@qlik.com"
+
+inputs:
+  repository:
+    description: "Repository where workflow is defined"
+    required: true
+  workflow-name:
+    description: "Workflow name that should be cancelled"
+    required: true
+  github-token:
+    description: "Github token that has access to repository"
+    required: true
+
+runs:
+  using: docker
+  image: Dockerfile
+  env:
+    REPOSITORY: ${{ inputs.repository }}
+    WORKFLOW_NAME: ${{ inputs.workflow-name }}
+    GITHUB_TOKEN: ${{ inputs.github-token }}
