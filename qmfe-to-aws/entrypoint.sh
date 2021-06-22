@@ -27,7 +27,8 @@ if [ -z "$VERSION" ]; then
 fi
 
 if [ -z "$SOURCE" ]; then
-  SOURCE="./dist"
+  echo "SOURCE is not set"
+  exit 1
 fi
 
 if [ -z "$S3_KEY" ]; then

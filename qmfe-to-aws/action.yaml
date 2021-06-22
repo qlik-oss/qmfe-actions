@@ -20,7 +20,7 @@ inputs:
     required: true
   source:
     description: "The folder that should be uploaded to the CDN. Generally './dist'"
-    required: false
+    required: true
   files:
     description: "Comma separated list of individual files to sync from source folder. Syncs the whole folder if empty"
     required: false
