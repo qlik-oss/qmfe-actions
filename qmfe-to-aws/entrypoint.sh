@@ -27,8 +27,7 @@ if [ -z "$VERSION" ]; then
 fi
 
 if [ -z "$SOURCE" ]; then
-  echo "SOURCE is not set"
-  exit 1
+  SOURCE="./dist"
 fi
 
 if [ -z "$S3_KEY" ]; then
@@ -59,6 +58,7 @@ echo "AWS_REGION              $AWS_REGION"
 echo "QMFE_ID:                $QMFE_ID"
 echo "VERSION:                $VERSION"
 echo "SOURCE:                 $SOURCE"
+echo "FILES:                  $FILES"
 echo "S3_KEY:                 $S3_KEY"
 echo "WITH_DELETE:            $WITH_DELETE"
 echo "DRY_RUN:                $DRY_RUN"
@@ -83,11 +83,17 @@ run() {
   local delete_flag
   [[ $WITH_DELETE = "true" ]] && delete_flag="--delete" || delete_flag=""
 
-  local command="aws $dryrun --profile qcs-cdn s3 sync $SOURCE s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION --exclude \"*.map\" $delete_flag --cache-control $CACHE_CONTROL"
-
-  echo "$command"
-  eval "$command"
-
+  # sync individual files?
+  if [[ -n "$FILES" ]]; then
+    local -a files=()
+    IFS=',' read -r -a files <<< "$FILES"
+    for file in "${files[@]}"; do
+      eval "aws $dryrun --profile qcs-cdn s3 cp $SOURCE/$file s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION --cache-control $CACHE_CONTROL"
+    done
+  else
+    # sync whole source folder
+    eval "aws $dryrun --profile qcs-cdn s3 sync $SOURCE s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION --exclude \"*.map\" $delete_flag --cache-control $CACHE_CONTROL"
+  fi
   echo "Version $VERSION of $QMFE_ID is now published to s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/"
 }
 

@@ -20,7 +20,10 @@ inputs:
     required: true
   source:
     description: "The folder that should be uploaded to the CDN. Generally './dist'"
-    required: true
+    required: false
+  files:
+    description: "Comma separated list of individual files to sync from source folder. Syncs the whole folder if empty"
+    required: false
   s3-key:
     description: "The S3 folder to which upload should go into"
     required: false
@@ -51,6 +54,7 @@ runs:
     QMFE_ID: ${{ inputs.qmfe-id }}
     VERSION: ${{ inputs.version }}
     SOURCE: ${{ inputs.source }}
+    FILES: ${{ inputs.files }}
     S3_KEY: ${{ inputs.s3-key }}
     AWS_REGION: ${{ inputs.aws-region }}
     WITH_DELETE: ${{ inputs.with-delete }}
