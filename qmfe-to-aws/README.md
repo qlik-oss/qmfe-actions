@@ -2,7 +2,7 @@
 
 Action using the [AWS-CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) to sync a qmfe package to an S3 bucket.
 
-The files in the `source` directory will end up in s3://<aws-bucket-name>/<s3-key>/<qmfe-id>/<version>/
+The files in the `source` directory will end up in `s3://<aws-bucket-name>/<s3-key>/<qmfe-id>/<version>/`
 
 ## Inputs
 
