@@ -25,7 +25,7 @@ jobs:
       - name: Clean up cancelled
         uses: qlik-oss/qmfe-actions/remove-cancelled-workflow
         with:
-          REPOSITORY: my-repo
-          WORKFLOW_NAME: my-workflow
-          GITHUB_TOKEN: {{ github.token }}
+          repository: my-repo
+          workflow-name: my-workflow
+          github-token: ${{ github.token }}
 ```
