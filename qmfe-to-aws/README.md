@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Upload qmfe package
-        uses: qlik-oss/qmfe-to-aws@master
+        uses: qlik-oss/qmfe-to-aws@v1
         with:
           aws-bucket-name: qcs-stage-cdn.qlikcloud.com
           aws-access-key-id: ${{ secrets.MY_SECRET }}
