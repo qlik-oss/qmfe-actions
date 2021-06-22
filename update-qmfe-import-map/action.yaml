@@ -1,0 +1,48 @@
+name: "Update qmfe import-map"
+description: "Creates a PR to bump the component version in the micro-frontend import-map."
+author: "egill.sveinbjornsson@qlik.com"
+
+inputs:
+  dry-run:
+    description: "For debugging purposes. Only logs out the import-map update."
+    required: false
+  namespace:
+    description: "The components namespace, defaults to 'qmfe' and will cause the component name to be @namespace/qmfe-id"
+    required: false
+  qmfe-id:
+    description: "The ID of the component. Generally, it is the name of the component (ex. 'my-component')"
+    required: true
+  qmfe-modules:
+    description: 'A JSON array of strings representing qmfeIds of modules in the project `''["foo", "bar"]''`. If not provided, the qmfe-id will be used'
+    required: false
+  qmfe-submodules:
+    description: "Set to true if this package is exposing submodules inside the package"
+    required: false
+  github-team:
+    description: "Github handle for the team that gets added as a reviewer for the created PR. Useful if teams want to be notified about the update"
+    required: true
+  github-token:
+    description: "Github token used to push the commit and create the PR"
+    required: true
+  version:
+    description: "Version of the component to update to, without a 'v' prefix"
+    required: true
+  cdn-base-path:
+    description: "Base path to the CDN location. Example: https://my-cdn.com"
+    required: true
+  github-org:
+    description: "The GitHub organization that owns the repo specified in the 'github-repo' input"
+    required: true
+  github-repo:
+    description: "The GitHub repository containing `import-map.json`"
+    required: true
+  git-username:
+    description: "Set the git username for the commits made by this action"
+    required: false
+  git-email:
+    description: "Set the git email for the commits made by this action"
+    required: false
+
+runs:
+  using: "node12"
+  main: index.js
