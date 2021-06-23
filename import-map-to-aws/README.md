@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Upload qmfe package
-        uses: qlik-oss/import-map-to-aws@master
+        uses: qlik-oss/qmfe-actions/import-map-to-aws@master
         with:
           aws-bucket-name: s3-bucket-name.host.com
           aws-access-key-id: ${{ secrets.MY_SECRET }}
