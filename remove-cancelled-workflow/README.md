@@ -15,8 +15,8 @@ Action that removes the last cancelled workflow in a repository's action list.
 Create a workflow `.github/workflows` folder.
 
 ```yaml
-name: S3 Sync
-on [push]
+name: My workflow
+on: push
 
 jobs:
   deploy:
