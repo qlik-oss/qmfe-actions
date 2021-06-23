@@ -1,5 +1,9 @@
 # Container image that runs your code
-FROM badouralix/curl-jq:latest
+FROM ubuntu:latest
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    jq
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY entrypoint.sh /entrypoint.sh

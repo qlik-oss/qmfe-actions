@@ -32,7 +32,7 @@ function clean_up_cancelled() {
     echo "Calling $workflow_url"
 
     # Get cancelled system test workflow run
-    run_id=$(curl -H "$header_auth" -H "$header_accept" "$workflow_url" | jq '.workflow_runs[].id')
+    run_id=$(curl -s -H "$header_auth" -H "$header_accept" "$workflow_url" | jq '.workflow_runs[].id')
 
     echo "run_id=$run_id"
     # Delete cancelled run
