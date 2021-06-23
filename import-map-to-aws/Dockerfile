@@ -1,6 +1,13 @@
 # Container image that runs your code
 FROM amazon/aws-cli:2.2.9
 
+LABEL repository="http://github.com/qlik-oss/qmfe-actions"
+LABEL homepage="http://github.com/qlik-oss/qmfe-actions/import-map-to-aws"
+LABEL "com.github.actions.name"="import-map-to-aws"
+LABEL "com.github.actions.description"="Uploads a qmfe import-map to AWS S3 bucket"
+LABEL "com.github.actions.icon"="check-circle"
+LABEL "com.github.actions.color"="green"
+
 # add jq to image
 RUN yum install jq -y
 
