@@ -124,7 +124,7 @@ deploy_import_map() {
           continue
       fi
       local -i curl_response
-      curl_response=$(curl --write-out "%{http_code}\n" --silent --output /dev/null "$url")
+      curl_response=$(curl --head --write-out "%{http_code}\n" --silent --output /dev/null "$url")
       if [ "$curl_response" == 200 ]; then
           echo "$url >>>>> import map entry is valid <<<<<"
       else
