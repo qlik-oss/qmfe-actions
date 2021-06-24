@@ -31,8 +31,8 @@ function merge_branch() {
 
   git remote set-url origin "https://x-access-token:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
 
-  # git config --global user.name "$GITHUB_ACTOR"
-  # git config --global user.email "$GITHUB_ACTOR@github.com"
+  git config --global user.name "$GITHUB_ACTOR"
+  git config --global user.email "$GITHUB_ACTOR@github.com"
 
   set -o xtrace
 
