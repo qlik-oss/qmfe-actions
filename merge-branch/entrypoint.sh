@@ -22,34 +22,42 @@ echo "TARGET_BRANCH = '$TARGET_BRANCH'"
 echo "FF_ONLY = $FF_ONLY"
 echo
 
-FF_MODE="--ff"
-if [[ "$FF_ONLY" == "true" ]]; then
-  FF_MODE="--ff-only"
-fi
+function merge_branch() {
 
-git remote set-url origin "https://x-access-token:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
-git config --global user.name "$GITHUB_ACTOR"
-git config --global user.email "$GITHUB_ACTOR@github.com"
+  FF_MODE="--no-ff"
+  if [[ "$FF_ONLY" == "true" ]]; then
+    FF_MODE="--ff-only"
+  fi
 
-set -o xtrace
+  git remote set-url origin "https://x-access-token:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+  git config --global user.name "$GITHUB_ACTOR"
+  git config --global user.email "$GITHUB_ACTOR@github.com"
 
-git fetch origin "$SOURCE_BRANCH"
-git checkout "$SOURCE_BRANCH"
-git pull --ff-only
+  set -o xtrace
 
-git fetch origin "$TARGET_BRANCH"
-git checkout "$TARGET_BRANCH"
-git pull --ff-only
+  git fetch origin "$SOURCE_BRANCH"
+  git checkout "$SOURCE_BRANCH"
+  git pull --rebase
 
-set +o xtrace
-echo
-echo "will merge $SOURCE_BRANCH ($(git log -1 --pretty=%H "$SOURCE_BRANCH"))"
-echo "into $TARGET_BRANCH ($(git log -1 --pretty=%H "$TARGET_BRANCH"))"
-echo
-set -o xtrace
+  local -r last_commit_msg="$(git show -s --format=%s)"
+  echo "last commit message is: $last_commit_msg"
 
-# Do the merge
-git merge $FF_MODE --no-edit "$SOURCE_BRANCH"
+  git fetch origin "$TARGET_BRANCH"
+  git checkout "$TARGET_BRANCH"
+  git pull --rebase
 
-# Push the branch
-git push origin "$TARGET_BRANCH"
+  set +o xtrace
+  echo
+  echo "will merge $SOURCE_BRANCH ($(git log -1 --pretty=%H "$SOURCE_BRANCH"))"
+  echo "into $TARGET_BRANCH ($(git log -1 --pretty=%H "$TARGET_BRANCH"))"
+  echo
+  set -o xtrace
+
+  # Do the merge
+  git merge $FF_MODE "$SOURCE_BRANCH" -m "$last_commit_msg"
+
+  # Push the branch
+  git push origin "$TARGET_BRANCH"
+}
+
+merge_branch "$@"
