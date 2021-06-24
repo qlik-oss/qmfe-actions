@@ -30,8 +30,9 @@ function merge_branch() {
   fi
 
   git remote set-url origin "https://x-access-token:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
-  git config --global user.name "$GITHUB_ACTOR"
-  git config --global user.email "$GITHUB_ACTOR@github.com"
+
+  # git config --global user.name "$GITHUB_ACTOR"
+  # git config --global user.email "$GITHUB_ACTOR@github.com"
 
   set -o xtrace
 
@@ -54,7 +55,7 @@ function merge_branch() {
   set -o xtrace
 
   # Do the merge
-  git merge $FF_MODE "$SOURCE_BRANCH" -m "$last_commit_msg"
+  git merge $FF_MODE "$SOURCE_BRANCH" -m "[AUTO MERGE]: $last_commit_msg"
 
   # Push the branch
   git push origin "$TARGET_BRANCH"
