@@ -1,4 +1,3 @@
-import * as core from "@actions/core";
 import { readFileSync, writeFileSync } from "fs";
 
 type ImportMap = { imports: Record<string, string> };
@@ -27,26 +26,23 @@ export function updateImportMap({
   qmfeModules = null,
   hasSubmodules = false,
   dryRun = false,
-}: UpdateImportMapArgs) {
-  if (qmfeModules) {
+}: UpdateImportMapArgs): string {
+  if (qmfeModules && qmfeModules.length) {
     for (const componentId of qmfeModules) {
       const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${namespace}-${componentId}.js`;
       importMap.imports[`@${namespace}/${componentId}`] = newUrl;
     }
+  } else if (hasSubmodules) {
+    const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/`;
+    importMap.imports[`@${namespace}/${qmfeId}/`] = newUrl;
   } else {
     const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${namespace}-${qmfeId}.js`;
     importMap.imports[`@${namespace}/${qmfeId}`] = newUrl;
-    if (hasSubmodules) {
-      const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/`;
-      importMap.imports[`@${namespace}/${qmfeId}/`] = newUrl;
-    }
   }
 
   const updatedImportMap = `${JSON.stringify(importMap, null, 2)}\n`;
   if (!dryRun) {
     writeFileSync("import-map.json", updatedImportMap);
   }
-
-  core.info("import-map.json updated");
-  core.info(updatedImportMap);
+  return updatedImportMap;
 }

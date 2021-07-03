@@ -354,10 +354,10 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       command_1.issue("warning", message instanceof Error ? message.toString() : message);
     }
     exports2.warning = warning;
-    function info5(message) {
+    function info4(message) {
       process.stdout.write(message + os.EOL);
     }
-    exports2.info = info5;
+    exports2.info = info4;
     function startGroup(name) {
       command_1.issue("group", name);
     }
@@ -4958,12 +4958,12 @@ var require_dist_node12 = __commonJS({
   "node_modules/@octokit/rest/dist-node/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    var core6 = require_dist_node8();
+    var core5 = require_dist_node8();
     var pluginRequestLog = require_dist_node9();
     var pluginPaginateRest = require_dist_node10();
     var pluginRestEndpointMethods = require_dist_node11();
     var VERSION = "18.6.0";
-    var Octokit2 = core6.Octokit.plugin(pluginRequestLog.requestLog, pluginRestEndpointMethods.legacyRestEndpointMethods, pluginPaginateRest.paginateRest).defaults({
+    var Octokit2 = core5.Octokit.plugin(pluginRequestLog.requestLog, pluginRestEndpointMethods.legacyRestEndpointMethods, pluginPaginateRest.paginateRest).defaults({
       userAgent: `octokit-rest.js/${VERSION}`
     });
     exports2.Octokit = Octokit2;
@@ -4971,7 +4971,7 @@ var require_dist_node12 = __commonJS({
 });
 
 // src/index.ts
-var core5 = __toModule(require_core());
+var core4 = __toModule(require_core());
 
 // src/util.ts
 var core = __toModule(require_core());
@@ -4997,7 +4997,7 @@ var readVersionInput = (version) => {
 };
 
 // src/gh.ts
-var core4 = __toModule(require_core());
+var core3 = __toModule(require_core());
 var import_exec = __toModule(require_exec());
 var import_rest = __toModule(require_dist_node12());
 
@@ -5020,7 +5020,6 @@ function templatePullRequestBody(templateArgs) {
 }
 
 // src/import-map.ts
-var core3 = __toModule(require_core());
 var import_fs = __toModule(require("fs"));
 function readImportMap() {
   return JSON.parse((0, import_fs.readFileSync)("import-map.json", "utf8"));
@@ -5035,26 +5034,24 @@ function updateImportMap({
   hasSubmodules = false,
   dryRun = false
 }) {
-  if (qmfeModules) {
+  if (qmfeModules && qmfeModules.length) {
     for (const componentId of qmfeModules) {
       const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${namespace}-${componentId}.js`;
       importMap.imports[`@${namespace}/${componentId}`] = newUrl;
     }
+  } else if (hasSubmodules) {
+    const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/`;
+    importMap.imports[`@${namespace}/${qmfeId}/`] = newUrl;
   } else {
     const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${namespace}-${qmfeId}.js`;
     importMap.imports[`@${namespace}/${qmfeId}`] = newUrl;
-    if (hasSubmodules) {
-      const newUrl2 = `${cdnBasePath}/qmfe/${qmfeId}/${version}/`;
-      importMap.imports[`@${namespace}/${qmfeId}/`] = newUrl2;
-    }
   }
   const updatedImportMap = `${JSON.stringify(importMap, null, 2)}
 `;
   if (!dryRun) {
     (0, import_fs.writeFileSync)("import-map.json", updatedImportMap);
   }
-  core3.info("import-map.json updated");
-  core3.info(updatedImportMap);
+  return updatedImportMap;
 }
 
 // src/gh.ts
@@ -5085,7 +5082,7 @@ var GH = class {
         yield (0, import_exec.exec)(`git fetch`);
         yield (0, import_exec.exec)(`git reset --hard origin/main`);
       } catch (err) {
-        core4.info(`Error creating new branch: ${err}`);
+        core3.info(`Error creating new branch: ${err}`);
       }
     });
   }
@@ -5106,16 +5103,16 @@ var GH = class {
       const regex = new RegExp(`chore\\(release\\): update @${this.opts.namespace}/${this.opts.qmfeId} to \\d+.\\d+.\\d+$`);
       const targets = openPRs.map(({ title, head }) => {
         if (title.match(regex) && title !== currentPRTitle) {
-          core4.info(`Matched on ${title}`);
+          core3.info(`Matched on ${title}`);
           return (0, import_exec.exec)(`git push origin --delete ${head.ref}`).catch((err) => {
-            core4.info(`Could not delete branch '${head.ref}': ${err}`);
+            core3.info(`Could not delete branch '${head.ref}': ${err}`);
           });
         }
       }).filter(Boolean);
       try {
         yield Promise.all(targets);
       } catch (err) {
-        core4.info(err);
+        core3.info(err);
       }
     });
   }
@@ -5134,6 +5131,7 @@ var GH = class {
         githubRepo,
         dryRun
       } = this.opts;
+      let updatedImportMap;
       const componentName = `@${namespace}/${qmfeId}`;
       const importMap = readImportMap();
       const HEAD_BRANCH = `${componentName}-integration-${version}`;
@@ -5144,7 +5142,7 @@ var GH = class {
         githubOrg
       });
       if (dryRun) {
-        updateImportMap({
+        updatedImportMap = updateImportMap({
           cdnBasePath,
           importMap,
           namespace,
@@ -5154,11 +5152,13 @@ var GH = class {
           hasSubmodules,
           dryRun
         });
+        core3.info("[dryrun] import-map.json updated");
+        core3.info(updatedImportMap);
         return;
       }
       yield this.configureGitUser();
       yield this.checkoutBranch(HEAD_BRANCH);
-      updateImportMap({
+      updatedImportMap = updateImportMap({
         cdnBasePath,
         importMap,
         namespace,
@@ -5167,15 +5167,17 @@ var GH = class {
         qmfeModules,
         hasSubmodules
       });
+      core3.info("import-map.json updated");
+      core3.info(updatedImportMap);
       yield this.commitChanges(GIT_MSG, HEAD_BRANCH);
       try {
         yield this.closeOlderPullRequests(githubOrg, githubRepo, GIT_MSG);
         process.env.GITHUB_TOKEN = githubToken;
         const createPullRequestCommand = `gh pr create       --title "${GIT_MSG}"       --body "${PR_BODY}"       --repo="${githubOrg}/${githubRepo}"       --reviewer "${githubTeam}"       --base "main"       --head "${HEAD_BRANCH}"`;
-        core4.info(`Executing: ${createPullRequestCommand}`);
+        core3.info(`Executing: ${createPullRequestCommand}`);
         yield (0, import_exec.exec)(createPullRequestCommand);
       } catch (err) {
-        core4.error(`Could not create PR. See output.`);
+        core3.error(`Could not create PR. See output.`);
       } finally {
         process.env.GITHUB_TOKEN = void 0;
       }
@@ -5187,19 +5189,19 @@ var GH = class {
 function run() {
   return __async(this, null, function* () {
     try {
-      const cdnBasePath = normalizeBasePath(core5.getInput("cdn-base-path"));
-      const dryRun = core5.getInput("dry-run") === "true";
-      const namespace = core5.getInput("namespace") || "qmfe";
-      const qmfeId = core5.getInput("qmfe-id");
-      const githubTeam = core5.getInput("github-team");
-      const githubToken = core5.getInput("github-token");
-      const githubOrg = core5.getInput("github-org");
-      const githubRepo = core5.getInput("github-repo");
-      const gitUsername = core5.getInput("git-username");
-      const gitEmail = core5.getInput("git-email");
-      const version = readVersionInput(core5.getInput("version"));
-      const qmfeModules = parseModulesInput(core5.getInput("qmfe-components") || core5.getInput("qmfe-modules"));
-      const hasSubmodules = core5.getInput("qmfe-submodules") === "true";
+      const cdnBasePath = normalizeBasePath(core4.getInput("cdn-base-path"));
+      const dryRun = core4.getInput("dry-run") === "true";
+      const namespace = core4.getInput("namespace") || "qmfe";
+      const qmfeId = core4.getInput("qmfe-id");
+      const githubTeam = core4.getInput("github-team");
+      const githubToken = core4.getInput("github-token");
+      const githubOrg = core4.getInput("github-org");
+      const githubRepo = core4.getInput("github-repo");
+      const gitUsername = core4.getInput("git-username");
+      const gitEmail = core4.getInput("git-email");
+      const version = readVersionInput(core4.getInput("version"));
+      const qmfeModules = parseModulesInput(core4.getInput("qmfe-components") || core4.getInput("qmfe-modules"));
+      const hasSubmodules = core4.getInput("qmfe-submodules") === "true";
       const gh = new GH({
         cdnBasePath,
         qmfeModules,
@@ -5216,9 +5218,9 @@ function run() {
         dryRun
       });
       yield gh.createPullRequest();
-      core5.info(dryRun ? "[Dry run] Success!" : "Success!");
+      core4.info(dryRun ? "[Dry run] Success!" : "Success!");
     } catch (error3) {
-      core5.setFailed(error3.message);
+      core4.setFailed(error3.message);
     }
   });
 }

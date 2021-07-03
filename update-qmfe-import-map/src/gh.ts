@@ -109,6 +109,7 @@ export class GH {
       githubRepo,
       dryRun,
     } = this.opts;
+    let updatedImportMap: string;
     const componentName = `@${namespace}/${qmfeId}`;
     const importMap = readImportMap();
     const HEAD_BRANCH = `${componentName}-integration-${version}`;
@@ -120,7 +121,7 @@ export class GH {
     });
 
     if (dryRun) {
-      updateImportMap({
+      updatedImportMap = updateImportMap({
         cdnBasePath,
         importMap,
         namespace,
@@ -130,13 +131,15 @@ export class GH {
         hasSubmodules,
         dryRun,
       });
+      core.info("[dryrun] import-map.json updated");
+      core.info(updatedImportMap);
       return;
     }
 
     await this.configureGitUser();
     await this.checkoutBranch(HEAD_BRANCH);
 
-    updateImportMap({
+    updatedImportMap = updateImportMap({
       cdnBasePath,
       importMap,
       namespace,
@@ -145,6 +148,9 @@ export class GH {
       qmfeModules,
       hasSubmodules,
     });
+
+    core.info("import-map.json updated");
+    core.info(updatedImportMap);
 
     await this.commitChanges(GIT_MSG, HEAD_BRANCH);
 
