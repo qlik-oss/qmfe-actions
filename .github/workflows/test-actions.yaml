@@ -16,8 +16,8 @@ jobs:
         uses: qlik-oss/qmfe-actions/qmfe-to-aws@v1
         with:
           aws-bucket-name: qcs-stage-cdn.qlikcloud.com
-          aws-access-key-id: ${{ secrets.AWS_CDN_STAGE_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_CDN_STAGE_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           qmfe-id: "test"
           version: "1.2.3"
           source: ./dist
@@ -27,8 +27,8 @@ jobs:
         uses: qlik-oss/qmfe-actions/qmfe-to-aws@v1
         with:
           aws-bucket-name: qcs-stage-cdn.qlikcloud.com
-          aws-access-key-id: ${{ secrets.AWS_CDN_STAGE_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_CDN_STAGE_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           source: ./dist
           qmfe-id: "test"
           version: "1.2.4"
@@ -43,7 +43,7 @@ jobs:
       - name: Test remove-cancelled-workflow action
         uses: qlik-oss/qmfe-actions/remove-cancelled-workflow@v1
         with:
-          repository: qlik-trial/qmfe-actions
+          repository: qlik-oss/qmfe-actions
           workflow-name: test-actions
           github-token: ${{ github.token }}
   import-map-to-aws:
@@ -58,8 +58,8 @@ jobs:
         uses: qlik-oss/qmfe-actions/import-map-to-aws@v1
         with:
           aws-bucket-name: qcs-stage-cdn.qlikcloud.com
-          aws-access-key-id: ${{ secrets.AWS_CDN_STAGE_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_CDN_STAGE_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-distribution-id: ${{ secrets.AWS_DISTRIBUTION_ID }}
           import-map-url: "https://cdn.qlik-stage-com/qmfe/import-map.json"
           dry-run: "true"
@@ -73,8 +73,9 @@ jobs:
       - name: Test update-qmfe-import-map action
         uses: qlik-oss/qmfe-actions/update-qmfe-import-map@v1
         with:
-          version: "1.2.3"
-          qmfe-id: "test"
+          version: 1.2.3
+          qmfe-id: test
+          namespace: qlik-trial
           qmfe-modules: '["foo", "bar"]'
           github-team: my-org/some-team
           github-token: my-secret-token
