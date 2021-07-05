@@ -5191,7 +5191,10 @@ function run() {
     try {
       const cdnBasePath = normalizeBasePath(core4.getInput("cdn-base-path"));
       const dryRun = core4.getInput("dry-run") === "true";
-      const namespace = core4.getInput("namespace") || "qmfe";
+      let namespace = core4.getInput("namespace");
+      if (namespace === null || namespace === "null") {
+        namespace = "qmfe";
+      };
       const qmfeId = core4.getInput("qmfe-id");
       const githubTeam = core4.getInput("github-team");
       const githubToken = core4.getInput("github-token");
