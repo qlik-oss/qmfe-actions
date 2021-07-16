@@ -36,7 +36,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - run: ${{ github.action_path }}/run-system-test.sh
+  - run: |
+      ls -la
+      ${{ github.action_path }}/run-system-test.sh
     env:
       SUITE: ${{ inputs.suite }}
       QMFE_OVERRIDE: ${{ inputs.import-map-overrides }}
