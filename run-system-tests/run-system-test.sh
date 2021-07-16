@@ -68,6 +68,6 @@ function run_tests() {
   ls
 
   # Start test-run
-  docker-compose -f run-system-tests/docker-compose.yml up --exit-code-from sut
+  docker-compose -f "$GITHUB_ACTION_PATH"/docker-compose.yml up --exit-code-from sut
 }
 run_tests "$@"

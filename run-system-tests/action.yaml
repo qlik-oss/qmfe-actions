@@ -37,9 +37,9 @@ runs:
   using: "composite"
   steps:
   - run: |
-      ls -la
       ${{ github.action_path }}/run-system-test.sh
     env:
+      GITHUB_ACTION_PATH: ${{ github.action_path }}
       SUITE: ${{ inputs.suite }}
       QMFE_OVERRIDE: ${{ inputs.import-map-overrides }}
       WDURL: ${{ inputs.wdurl }}
