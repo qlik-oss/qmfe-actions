@@ -1,0 +1,51 @@
+name: "Run system tests"
+description: "Run system tests"
+author: "andreas.jonsson@qlik.com"
+
+inputs:
+  suite:
+    description: "Repository where the commit lives"
+    required: false
+  import-map-overrides:
+    description: "Import-map overrides to use e.g as a JSON string or URL to import-map"
+    required: false
+  docker-image:
+    description: "Docker image to use"
+    required: true
+  docker-username:
+    description: "Docker user name"
+    required: true
+  docker-password:
+    description: "Docker password"
+    required: true
+  wdurl:
+    description: 'Zalenium grid to use'
+    required: false
+  parallelexecution: 
+    description: 'Number of parallell webdrivers to use'
+    required: false
+  base-url:
+    description: "Url to test environment"
+    required: true
+  auth-url: 
+    description: "Auth url to test environment"
+    required: true
+  github-token:
+    description: "Github token that has access to repository"
+    required: true
+runs:
+  using: "composite"
+  steps:
+  - run: ${{ github.action_path }}/run-system-test.sh
+    env:
+      SUITE: ${{ inputs.suite }}
+      QMFE_OVERRIDE: ${{ inputs.import-map-overrides }}
+      WDURL: ${{ inputs.wdurl }}
+      PARALLELEXECUTION: ${{ inputs.parallelexecution }}
+      BASEURL: ${{ inputs.base-url }}
+      AUTHURL: ${{ inputs.auth-url }}
+      IMAGE: ${{ inputs.docker-image }} 
+      DOCKER_USERNAME: ${{ inputs.docker-username }}
+      DOCKER_PWD: ${{ inputs.docker-password }}
+      GITHUB_TOKEN: ${{ inputs.github-token }}
+    shell: bash

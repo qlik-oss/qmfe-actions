@@ -1,0 +1,23 @@
+sut:
+  image: ${IMAGE}
+  container_name: ${CONTAINER_NAME}
+  volumes:
+    - /dev/shm:/dev/shm
+    - ./reports:/protractor/reports
+  environment:
+    - RUNS
+    - BASEURL
+    - AUTHURL
+    - QSEFE_LICENSE
+    - WDURL
+    - SUITE
+    - JOB_NAME
+    - VIDEO
+    - ZALENIUM_VIDEO
+    - PARALLELEXECUTION
+    - PROM_ENDPOINT
+    - PROM_JOBNAME
+    - DISABLE_FEATURE_FLAGS
+    - BUILD_URL
+    - PGPASSWORD
+    - QMFE_OVERRIDE
