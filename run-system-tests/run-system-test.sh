@@ -66,6 +66,6 @@ function run_tests() {
   echo "$DOCKER_PWD" | docker login -u "$DOCKER_USERNAME" --password-stdin "$REGISTRY_ORG"
   
   # Start test-run
-  docker-compose -f .github/actions/custom-st-action/docker-compose.yml up --exit-code-from sut
+  docker-compose -f run-system-tests/docker-compose.yml up --exit-code-from sut
 }
 run_tests "$@"
