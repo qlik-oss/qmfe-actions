@@ -65,9 +65,8 @@ function run_tests() {
   echo "Logging into docker registry..."
   echo "$DOCKER_PWD" | docker login -u "$DOCKER_USERNAME" --password-stdin "$REGISTRY_ORG"
   
-  ls
-
-  # Start test-run
+  # Download image and start test container
   docker-compose -f "$GITHUB_ACTION_PATH"/docker-compose.yml up --exit-code-from sut
 }
-run_tests "$@"
+
+run_tests
