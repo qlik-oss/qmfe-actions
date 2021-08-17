@@ -4,7 +4,7 @@ author: "andreas.jonsson@qlik.com"
 
 inputs:
   suite:
-    description: "Repository where the commit lives"
+    description: "Test suite to run"
     required: false
   import-map-overrides:
     description: "Import-map overrides to use e.g as a JSON string or URL to import-map"
