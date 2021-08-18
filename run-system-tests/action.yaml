@@ -40,6 +40,7 @@ runs:
       ${{ github.action_path }}/run-system-test.sh
     env:
       GITHUB_ACTION_PATH: ${{ github.action_path }}
+      GITHUB_WORKSPACE: ${{ github.workspace }}
       SUITE: ${{ inputs.suite }}
       QMFE_OVERRIDE: ${{ inputs.import-map-overrides }}
       WDURL: ${{ inputs.wdurl }}

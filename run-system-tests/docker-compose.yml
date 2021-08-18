@@ -3,7 +3,7 @@ sut:
   container_name: ${CONTAINER_NAME}
   volumes:
     - /dev/shm:/dev/shm
-    - ./reports:/protractor/reports
+    - /${GITHUB_WORKSPACE}/reports:/protractor/reports
   environment:
     - RUNS
     - BASEURL
