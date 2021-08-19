@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#set eo pipefail
-
 if [ -z "$IMAGE" ]; then
   echo "Docker image is not set"
   exit 1
@@ -27,17 +25,12 @@ if [ -z "$BASEURL" ]; then
 fi
 
 if [ -z "$SUITE" ]; then
-  echo "SUITE is not set defaulting to qmfe"
+  echo "SUITE is not set, defaulting to qmfe"
   export SUITE=qmfe
 fi
 
 if [ -z "$QMFE_OVERRIDE" ]; then
   echo "QMFE_OVERRIDE is not set, tests will run without any overrides"
-fi
-
-if [ -z "$GITHUB_TOKEN" ]; then
-  echo "GITHUB_TOKEN is not set"
-  exit 1
 fi
 
 echo "Running system-tests with the following environment variables:"
@@ -47,11 +40,10 @@ echo "DOCKER_PWD:         $DOCKER_PWD"
 echo "WDURL:              $WDURL"
 echo "SUITE:              $SUITE"
 echo "QMFE_OVERRIDE:      $QMFE_OVERRIDE"
-echo "GITHUB_TOKEN:        $GITHUB_TOKEN"
-echo ""
+
 
 function run_tests() {
-  echo "import-map that will be used in test run: $QMFE_OVERRIDE"
+  echo "import-map overrides that will be used in test run: $QMFE_OVERRIDE"
 
   # Check if QMFE_OVERRIDE is path to import-map
   if [[ "$QMFE_OVERRIDE" = http* ]]; then
@@ -65,7 +57,7 @@ function run_tests() {
   echo "Logging into docker registry..."
   echo "$DOCKER_PWD" | docker login -u "$DOCKER_USERNAME" --password-stdin "$REGISTRY_ORG"
   
-  # Download image and start test container
+  # Download image, start and run test container
   docker-compose -f "$GITHUB_ACTION_PATH"/docker-compose.yml up --exit-code-from sut
 }
 

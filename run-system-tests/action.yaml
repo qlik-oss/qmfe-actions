@@ -29,10 +29,7 @@ inputs:
     required: true
   auth-url: 
     description: "Auth url to test environment"
-    required: true
-  github-token:
-    description: "Github token that has access to repository"
-    required: true
+    required: false
 runs:
   using: "composite"
   steps:
@@ -50,5 +47,4 @@ runs:
       IMAGE: ${{ inputs.docker-image }} 
       DOCKER_USERNAME: ${{ inputs.docker-username }}
       DOCKER_PWD: ${{ inputs.docker-password }}
-      GITHUB_TOKEN: ${{ inputs.github-token }}
     shell: bash
