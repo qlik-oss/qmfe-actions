@@ -1,4 +1,6 @@
-# Action for running the system tests
+# Run system tests
+
+Action to run the system tests with certain inputs (suite, import-map-overrides).
 
 ## Inputs
 
@@ -10,7 +12,7 @@
 | `docker-username`       | The docker user name                                                           | **TRUE**  | ''                              |
 | `docker-password`       | The docker password                                                            | **TRUE**  | ''                              |
 | `wdurl`                 | The Zalenium Grid to use                                                       | **FALSE** | Defaults to no grid             |
-| `parallelexecution`     | Number of webdrivers run in parallel                                           | **FALSE** | Defaults to 1                   |
+| `parallelexecution`     | Number of webdrivers to run in parallel                                        | **FALSE** | Defaults to 1                   |
 | `base-url`              | URL to QSE tenant                                                              | **TRUE**  | ''                              |
 | `auth-url`              | URL to auth provider                                                           | **FALSE** | **SECRET**                      |
 
