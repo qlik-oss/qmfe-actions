@@ -64,12 +64,13 @@ deploy_import_map() {
   # set some useful VARIABLES
   local -r s3_base="s3://$AWS_BUCKET_NAME/$S3_KEY" # -> s3://s3-bucket/qmfe
   local -r aws_s3_bucket_import_map_url="$s3_base/$FILE_NAME" # -> s3://s3-bucket/qmfe/import-map.json
+  local -r aws_s3_metrics_url="$s3_base/metrics" # -> s3://s3-bucket/qmfe/import-map.json
   local -r invalidation_path="/$S3_KEY/$FILE_NAME" # -> /qmfe/import-map.json
   local -r aws_profile="qcs-cdn"
   local -r history_folder="${FILE_NAME%.json}-history"
 
   local dryrun
-  [[ $DRY_RUN = "true" ]] && dryrun="--dryrun" || dryrun=""
+  [[ $DRY_RUN = "true" ]] && dryrun="--dryrun"
 
 
   aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile "$aws_profile"
@@ -143,20 +144,28 @@ deploy_import_map() {
 
   # Upload import-map to history folder
   echo "Upload import-map to history folder"
-  aws s3 cp deploy-import-map.json "$s3_base/$history_folder/$(date "+%Y.%m.%d-%H.%M.%S").$FILE_NAME" --profile "$aws_profile" $dryrun
+  aws s3 cp deploy-import-map.json "$s3_base/$history_folder/$(date "+%Y.%m.%d-%H.%M.%S").$FILE_NAME" --profile $aws_profile $dryrun
 
   # does import-map exist in s3?
   local -r -i file_exist="$(aws s3 ls "$aws_s3_bucket_import_map_url" --recursive --summarize --profile "$aws_profile" | grep 'Total Objects: ' | sed 's/[^0-9]*//g')"
   local locked="false"
 
   if [[ "$file_exist" -gt 0 ]]; then
-    # Upload import-map to default folder if file is NOT locked
+    # Check if import-map file has a locked attribute in S3 meta-data
     locked=$(aws s3api head-object --bucket "$AWS_BUCKET_NAME" --key "$S3_KEY/$FILE_NAME" --profile "$aws_profile" | jq .Metadata.locked)
   fi
+
+  # Upload import-map to default folder if file is NOT locked
   if [[ "$locked" == "\"true\"" ]]; then
     echo "$aws_s3_bucket_import_map_url is locked - new version of import-map could not be applied."
   else
-    aws s3 cp deploy-import-map.json "$aws_s3_bucket_import_map_url" --cache-control "$CACHE_CONTROL" --profile "$aws_profile" $dryrun
+    echo "Deploy import-map to $aws_s3_bucket_import_map_url"
+    aws s3 cp deploy-import-map.json "$aws_s3_bucket_import_map_url" --cache-control "$CACHE_CONTROL" --profile $aws_profile $dryrun
+    # create metrics file
+    echo "Upload metrics to $aws_s3_metrics_url"
+
+    node ../../translate-import-map-to-metrics.js $FILE_NAME > metrics
+    aws s3 cp metrics "$aws_s3_metrics_url" --cache-control no-cache --profile $aws_profile $dryrun
     if [ -n "$AWS_DISTRIBUTION_ID" ]; then
       # invalidate S3 object to fetch origin from S3 bucket
       command="aws cloudfront create-invalidation --distribution-id $AWS_DISTRIBUTION_ID --paths $invalidation_path --profile $aws_profile"
@@ -165,6 +174,7 @@ deploy_import_map() {
         echo "(dryrun) $command"
         echo "(dryrun) curl $IMPORT_MAP_URL"
       else
+        echo "invalidating import-map.json file at cloudfront"
         eval "$command"
         # curl the file to warm up the cache
         curl "$IMPORT_MAP_URL"
