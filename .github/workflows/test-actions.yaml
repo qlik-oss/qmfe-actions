@@ -63,6 +63,9 @@ jobs:
           aws-distribution-id: ${{ secrets.AWS_DISTRIBUTION_ID }}
           import-map-url: "https://cdn.qlik-stage-com/qmfe/import-map.json"
           dry-run: "true"
+      - name: Check metrics file
+        run: |
+          cat metrics
   update-qmfe-import-map:
     runs-on: ubuntu-latest
     steps:
