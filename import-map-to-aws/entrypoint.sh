@@ -163,7 +163,7 @@ deploy_import_map() {
     aws s3 cp deploy-import-map.json "$aws_s3_bucket_import_map_url" --cache-control "$CACHE_CONTROL" --profile $aws_profile $dryrun
     # create metrics file
     echo "Upload metrics to $aws_s3_metrics_url"
-    pwd
+
     node ../../translate-import-map-to-metrics.js $FILE_NAME > metrics
     aws s3 cp metrics "$aws_s3_metrics_url" --cache-control no-cache --profile $aws_profile $dryrun
     if [ -n "$AWS_DISTRIBUTION_ID" ]; then
