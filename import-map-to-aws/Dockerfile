@@ -2,9 +2,11 @@
 FROM amazon/aws-cli:2.2.29
 
 # add jq to image
-RUN yum install jq -y
+RUN yum update -y \
+    && yum install -y gcc-c++ make jq
 # add node to image
-RUN yum install nodejs14 -y
+RUN curl -sL https://rpm.nodesource.com/setup_14.x | bash -
+RUN yum install -y nodejs
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY entrypoint.sh /entrypoint.sh
