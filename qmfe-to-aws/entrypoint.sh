@@ -69,6 +69,13 @@ echo ""
 run() {
   [ ! -d "$SOURCE" ] && echo "ERROR: Directory $SOURCE does not exists." && exit 1
 
+  if [ "$(ls -A $SOURCE)" ]; then
+    echo "Preparing to upload files in $SOURCE"
+  else
+    echo "Directory '$SOURCE' is empty. Ensure the path is correct and that the project is built prior to running this action."
+    exit 1
+  fi
+
   aws --version
 
   aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile qcs-cdn
