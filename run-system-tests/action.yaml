@@ -18,10 +18,10 @@ inputs:
   docker-password:
     description: "Docker password"
     required: true
-  wdurl:
+  grid-url:
     description: 'Zalenium grid to use'
     required: false
-  parallelexecution: 
+  parallel-execution: 
     description: 'Number of parallell webdrivers to use'
     required: false
   base-url:
@@ -40,8 +40,8 @@ runs:
       GITHUB_WORKSPACE: ${{ github.workspace }}
       SUITE: ${{ inputs.suite }}
       QMFE_OVERRIDE: ${{ inputs.import-map-overrides }}
-      WDURL: ${{ inputs.wdurl }}
-      PARALLELEXECUTION: ${{ inputs.parallelexecution }}
+      WDURL: ${{ inputs.grid-url }}
+      PARALLELEXECUTION: ${{ inputs.parallel-execution }}
       BASEURL: ${{ inputs.base-url }}
       AUTHURL: ${{ inputs.auth-url }}
       IMAGE: ${{ inputs.docker-image }} 

@@ -11,8 +11,8 @@ Action to run the system tests with certain inputs (suite, import-map-overrides)
 | `docker-image`          | The docker image to use                                                        | **TRUE**  | ''                              |
 | `docker-username`       | The docker user name                                                           | **TRUE**  | ''                              |
 | `docker-password`       | The docker password                                                            | **TRUE**  | ''                              |
-| `wdurl`                 | The Zalenium Grid to use                                                       | **FALSE** | Defaults to no grid             |
-| `parallelexecution`     | Number of webdrivers to run in parallel                                        | **FALSE** | Defaults to 1                   |
+| `grid-url`              | The Zalenium Grid to use                                                       | **FALSE** | Defaults to no grid             |
+| `parallel-execution`    | Number of webdrivers to run in parallel                                        | **FALSE** | Defaults to 1                   |
 | `base-url`              | URL to QSE tenant                                                              | **TRUE**  | ''                              |
 | `auth-url`              | URL to auth provider                                                           | **FALSE** | **SECRET**                      |
 
@@ -31,8 +31,8 @@ on: pull-request
           docker-image: registry/org/image:latest
           docker-username: my-docker-username
           docker-password: my-docker-password
-          wdurl: http://grid-to-use
-          parallelexecution: 6
+          grid-url: http://grid-to-use
+          parallel-execution: 6
           base-url: https://qse-tenant.com
           suite: qmfe
           import-map-overrides: "{\"@qmfe/qmfeId\":\"https://cdn-url.com/qmfe/qmfeId/version/qmfeId.js\"}"
