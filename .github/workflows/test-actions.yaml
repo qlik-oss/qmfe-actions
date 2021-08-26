@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Create import-map
         run: |
-          echo '{ "imports": { "@qmfe/startup": "https://cdn.qlik-stage.com/qmfe/main-web-container/0.22.0/qmfe-startup.js" } }' > ./import-map.json
+          echo '{"imports":{"@qmfe/startup":"https://cdn.qlik-stage.com/qmfe/main-web-container/0.22.0/qmfe-startup.js"}}' > ./import-map.json
       - name: Test import-map-to-aws action
         uses: qlik-oss/qmfe-actions/import-map-to-aws@v1
         with:
@@ -63,13 +63,16 @@ jobs:
           aws-distribution-id: ${{ secrets.AWS_DISTRIBUTION_ID }}
           import-map-url: "https://cdn.qlik-stage-com/qmfe/import-map.json"
           dry-run: "true"
+      - name: Check metrics file
+        run: |
+          cat metrics
   update-qmfe-import-map:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Create fake import-map
         run: |
-          echo '{ "imports": { "@qmfe/foo": "https://my-cdn.com/qmfe/foo/1.2.3/qmfe-foo.js" } }' > ./import-map.json
+          echo '{"imports":{"@qmfe/foo":"https://my-cdn.com/qmfe/foo/1.2.3/qmfe-foo.js"}}' > ./import-map.json
       - name: Test update-qmfe-import-map action
         uses: qlik-oss/qmfe-actions/update-qmfe-import-map@v1
         with:
