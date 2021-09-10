@@ -74,7 +74,7 @@ deploy_import_map() {
 
 
   aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile "$aws_profile"
-  aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile "$aws_profile"
+  # aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile "$aws_profile"
 
   # prepare upload by removing entries from exclude input and transform transform input
   # remove entries
