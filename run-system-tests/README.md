@@ -26,7 +26,7 @@ on: pull-request
   system-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: qlik-oss/qmfe-actions/run-system-tests@st-action
+      - uses: qlik-oss/qmfe-actions/run-system-tests@v1
         with:
           docker-image: registry/org/image:latest
           docker-username: my-docker-username
