@@ -16,8 +16,8 @@ jobs:
         uses: qlik-oss/qmfe-actions/qmfe-to-aws@v1
         with:
           aws-bucket-name: qcs-stage-cdn.qlikcloud.com
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: "123"
+          aws-secret-access-key: "ABC"
           qmfe-id: "test"
           version: "1.2.3"
           source: ./dist
@@ -27,8 +27,8 @@ jobs:
         uses: qlik-oss/qmfe-actions/qmfe-to-aws@v1
         with:
           aws-bucket-name: qcs-stage-cdn.qlikcloud.com
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: "123"
+          aws-secret-access-key: "ABC"
           source: ./dist
           qmfe-id: "test"
           version: "1.2.4"

@@ -144,7 +144,7 @@ deploy_import_map() {
 
   # Upload import-map to history folder
   echo "Upload import-map to history folder"
-  aws s3 cp deploy-import-map.json "$s3_base/$history_folder/$(date "+%Y.%m.%d-%H.%M.%S").$FILE_NAME" --profile $aws_profile $dryrun
+  eval "aws s3 cp deploy-import-map.json $s3_base/$history_folder/$(date "+%Y.%m.%d-%H.%M.%S").$FILE_NAME --profile $aws_profile $dryrun"
 
   # does import-map exist in s3?
   local -r -i file_exist="$(aws s3 ls "$aws_s3_bucket_import_map_url" --recursive --summarize --profile "$aws_profile" | grep 'Total Objects: ' | sed 's/[^0-9]*//g')"
