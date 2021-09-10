@@ -13,7 +13,7 @@ jobs:
           echo "FileOne" > ./dist/file1
           echo "FileTwo" > ./dist/file2
       - name: Test qmfe-to-aws action
-        uses: qlik-oss/qmfe-actions/qmfe-to-aws@v1
+        uses: qlik-oss/qmfe-actions/qmfe-to-aws@test-to-fail
         with:
           aws-bucket-name: qcs-stage-cdn.qlikcloud.com
           aws-access-key-id: "123"
@@ -24,7 +24,7 @@ jobs:
           dry-run: "true"
           cache-control: "no-cache"
       - name: Test qmfe-to-aws action with files
-        uses: qlik-oss/qmfe-actions/qmfe-to-aws@v1
+        uses: qlik-oss/qmfe-actions/qmfe-to-aws@test-to-fail
         with:
           aws-bucket-name: qcs-stage-cdn.qlikcloud.com
           aws-access-key-id: "123"
