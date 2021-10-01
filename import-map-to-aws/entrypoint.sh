@@ -144,15 +144,15 @@ deploy_import_map() {
 
   # Upload import-map to history folder
   echo "Upload import-map to history folder"
-  aws s3 cp deploy-import-map.json "$s3_base/$history_folder/$(date "+%Y.%m.%d-%H.%M.%S").$FILE_NAME" --profile $aws_profile $dryrun
+  aws s3 cp deploy-import-map.json "$s3_base/$history_folder/$(date "+%Y.%m.%d-%H.%M.%S").$FILE_NAME" --profile $aws_profile $dryrun --region $AWS_REGION
 
   # does import-map exist in s3?
-  local -r -i file_exist="$(aws s3 ls "$aws_s3_bucket_import_map_url" --recursive --summarize --profile "$aws_profile" | grep 'Total Objects: ' | sed 's/[^0-9]*//g')"
+  local -r -i file_exist="$(aws s3 ls "$aws_s3_bucket_import_map_url" --recursive --summarize --profile "$aws_profile" --region $AWS_REGION | grep 'Total Objects: ' | sed 's/[^0-9]*//g')"
   local locked="false"
 
   if [[ "$file_exist" -gt 0 ]]; then
     # Check if import-map file has a locked attribute in S3 meta-data
-    locked=$(aws s3api head-object --bucket "$AWS_BUCKET_NAME" --key "$S3_KEY/$FILE_NAME" --profile "$aws_profile" | jq .Metadata.locked)
+    locked=$(aws s3api head-object --bucket "$AWS_BUCKET_NAME" --key "$S3_KEY/$FILE_NAME" --profile "$aws_profile" --region $AWS_REGION | jq .Metadata.locked)
   fi
 
   # Upload import-map to default folder if file is NOT locked
@@ -160,12 +160,12 @@ deploy_import_map() {
     echo "$aws_s3_bucket_import_map_url is locked - new version of import-map could not be applied."
   else
     echo "Deploy import-map to $aws_s3_bucket_import_map_url"
-    aws s3 cp deploy-import-map.json "$aws_s3_bucket_import_map_url" --cache-control "$CACHE_CONTROL" --profile $aws_profile $dryrun
+    aws s3 cp deploy-import-map.json "$aws_s3_bucket_import_map_url" --cache-control "$CACHE_CONTROL" --profile $aws_profile --region $AWS_REGION $dryrun
     # create metrics file
     echo "Upload metrics to $aws_s3_metrics_url"
 
     node ../../translate-import-map-to-metrics.js $FILE_NAME > metrics
-    aws s3 cp metrics "$aws_s3_metrics_url" --cache-control no-cache --profile $aws_profile $dryrun
+    aws s3 cp metrics "$aws_s3_metrics_url" --cache-control no-cache --profile $aws_profile --region $AWS_REGION $dryrun
     if [ -n "$AWS_DISTRIBUTION_ID" ]; then
       # invalidate S3 object to fetch origin from S3 bucket
       command="aws cloudfront create-invalidation --distribution-id $AWS_DISTRIBUTION_ID --paths $invalidation_path --profile $aws_profile"
