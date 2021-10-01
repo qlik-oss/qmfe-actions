@@ -168,7 +168,7 @@ deploy_import_map() {
     aws s3 cp metrics "$aws_s3_metrics_url" --cache-control no-cache --profile $aws_profile --region $AWS_REGION $dryrun
     if [ -n "$AWS_DISTRIBUTION_ID" ]; then
       # invalidate S3 object to fetch origin from S3 bucket
-      command="aws cloudfront create-invalidation --distribution-id $AWS_DISTRIBUTION_ID --paths $invalidation_path --profile $aws_profile"
+      command="aws cloudfront create-invalidation --distribution-id $AWS_DISTRIBUTION_ID --paths $invalidation_path --profile $aws_profile --region $AWS_REGION"
 
       if [[ $DRY_RUN = "true" ]]; then
         echo "(dryrun) $command"
