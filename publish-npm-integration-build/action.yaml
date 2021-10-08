@@ -1,0 +1,59 @@
+name: "Publish an NPM integration build"
+description: "Publishes an integration build to the GitHub package registry"
+author: "egill.sveinbjornsson@qlik.com"
+
+inputs:
+  build-script:
+    description: "The full command to build the projects NPM package. Example: 'npm run build'"
+    required: true
+    default: "npm run build"
+  dist-folder:
+    description: "Name of the folder where the build script outputs files"
+    required: true
+    default: "dist"
+  include-types:
+    description: "Whether to enforce the inclusion of type declarations in the package"
+    required: false
+    default: "true"
+  dry-run:
+    description: "Skips the actual publishing steps, mainly for testing the action"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate integration version value
+      shell: bash
+      run: |
+        BUILD_ID=$(date +%s)
+        VER=$(node -e "console.log(require('./package.json').version.concat('-$BUILD_ID'))")
+        echo "$VER"
+        if (echo $VER | egrep -- '-[0-9]+$' 1> /dev/null); then
+          npm version $VER --no-git-tag-version
+        fi
+
+    - name: Run build script
+      shell: bash
+      run: ${{ inputs.build-script }}
+
+    - name: Publish integration package
+      shell: bash
+      run: |
+        if [[ "${{ inputs.include-types }}" = "true" ]]; then
+          # make sure we have .d.ts files in our package
+          DTS=`npm publish ${{ inputs.dist-folder }} --dry-run --ignore-script 2>&1 | grep d.ts | wc -l`
+          echo "# of *.d.ts files is $DTS"
+          if [[ $DTS -eq 0 ]]; then
+            echo "Missing *.d.ts files"
+            exit 1
+          fi
+        fi
+
+        if [[ "${{ inputs.dry-run }}" = "true" ]]; then
+          echo "#### NPM PUBLISH DRY RUN ####"
+          npm publish ${{ inputs.dist-folder }} --dry-run --ignore-script --tag next
+        else
+          npm publish ${{ inputs.dist-folder }} --ignore-script --tag next
+          echo "Package was successfully published"
+        fi
