@@ -66,6 +66,20 @@ jobs:
       - name: Check metrics file
         run: |
           cat metrics
+  publish-npm-integration-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create fake package.json
+        run: |
+          echo '{"name": "test-project", "version": "0.0.1", "scripts": { "build-npm": "mkdir ./dist-types && cp package.json ./dist-types" } }' > ./package.json
+      - name: Test publish-npm-integration-build action
+        uses: qlik-oss/qmfe-actions/publish-npm-integration-build@v1
+        with:
+          build-script: npm run build-npm
+          dist-folder: "./dist-types"
+          include-types: "false"
+          dry-run: "true"
   update-qmfe-import-map:
     runs-on: ubuntu-latest
     steps:
