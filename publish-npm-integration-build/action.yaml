@@ -8,9 +8,9 @@ inputs:
     required: true
     default: "npm run build"
   dist-folder:
-    description: "Name of the folder where the build script outputs files"
-    required: true
-    default: "dist"
+    description: "Name of the folder to publish"
+    required: false
+    default: ""
   include-types:
     description: "Whether to enforce the inclusion of type declarations in the package"
     required: false

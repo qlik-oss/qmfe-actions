@@ -7,7 +7,7 @@ Publishes an integration (pre-release) npm package to the configured package reg
 | Key             | Description                                                          | Required  | Default           |
 | --------------- | -------------------------------------------------------------------- | --------- | ----------------- |
 | `build-script`  | The full command to build the projects NPM package                   | **TRUE**  | `"npm run build"` |
-| `dist-folder`   | Name of the folder where the build script outputs files              | **TRUE**  | `"dist"`          |
+| `dist-folder`   | Name of the folder to publish                                        | **TRUE**  | `""`              |
 | `include-types` | Whether to enforce the inclusion of type declarations in the package | **FALSE** | `"true"`          |
 | `dry-run`       | Skips the actual publishing steps, mainly for testing the action     | **FALSE** | `"false"`         |
 
