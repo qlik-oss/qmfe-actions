@@ -69,7 +69,7 @@ echo ""
 run() {
   [ ! -d "$SOURCE" ] && echo "ERROR: Directory $SOURCE does not exists." && exit 1
 
-  if [ "$(ls -A $SOURCE)" ]; then
+  if [ "$(ls -A "$SOURCE")" ]; then
     echo "Preparing to upload files in $SOURCE"
   else
     echo "Directory '$SOURCE' is empty. Ensure the path is correct and that the project is built prior to running this action."
@@ -80,6 +80,11 @@ run() {
 
   aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile qcs-cdn
   aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile qcs-cdn
+
+  if [[ $(aws s3 ls "s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION" | head) ]]; then
+    echo -e "s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION already exists, will NOT upload to this one";
+    exit 1
+  fi
 
   echo ""
   echo "|-----------------------|"
@@ -102,7 +107,12 @@ run() {
     # sync whole source folder
     eval "aws $dryrun --profile qcs-cdn s3 sync $SOURCE s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION --exclude \"*.map\" $delete_flag --cache-control $CACHE_CONTROL"
   fi
-  echo "Version $VERSION of $QMFE_ID is now published to s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/"
+
+  if [[ $DRY_RUN ]]; then
+    echo "This is a dry-run, nothing was uploaded"
+  else
+    echo "Version $VERSION of $QMFE_ID is now published to s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/"
+  fi
 }
 
 run "$@"
