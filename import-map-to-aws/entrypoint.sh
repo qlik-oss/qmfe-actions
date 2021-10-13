@@ -148,12 +148,13 @@ deploy_import_map() {
 
   # does import-map exist in s3?
   local -r -i file_exist="$(aws s3 ls "$aws_s3_bucket_import_map_url" --recursive --summarize --profile "$aws_profile" --region $AWS_REGION | grep 'Total Objects: ' | sed 's/[^0-9]*//g')"
-  local locked="\"true\""
+  local locked="false"
 
   if [[ "$file_exist" -gt 0 ]]; then
     # Check if import-map file has a locked attribute in S3 meta-data
     locked=$(aws s3api head-object --bucket "$AWS_BUCKET_NAME" --key "$S3_KEY/$FILE_NAME" --profile "$aws_profile" --region $AWS_REGION | jq .Metadata.locked)
   fi
+  locked="\"true\""
   # Upload import-map to default folder if file is NOT locked
   if [[ "$locked" == "\"true\"" ]]; then
     echo "$aws_s3_bucket_import_map_url is locked - new version of import-map could not be applied."
