@@ -46,7 +46,7 @@ inputs:
     default: "import-map.json"
 outputs:
   import-map-state: 
-    description: "Outputs wether the import map is locked or not"
+    description: "Outputs wether the import-map is in locked state or not"
 
 runs:
   using: docker
