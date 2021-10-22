@@ -1,6 +1,6 @@
 # checksum-file-to-aws
 
-Computes an md5 checksum on a given file and uploads and empty file with the checksum as name to a AWS S3 bucket location
+Computes an md5 checksum on a given file and uploads an empty file with the checksum as name to a AWS S3 bucket location
 
 ## Inputs
 
