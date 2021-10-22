@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+err_report() {
+    echo "Error on line $1"
+}
+
+trap 'err_report $LINENO' ERR
+
 if [ -z "$AWS_ACCESS_KEY_ID" ]; then
   echo "AWS_ACCESS_KEY_ID is not set"
   exit 1
@@ -66,53 +72,50 @@ echo "DRY_RUN:                $DRY_RUN"
 echo "CACHE_CONTROL:          $CACHE_CONTROL"
 echo ""
 
-run() {
-  [ ! -d "$SOURCE" ] && echo "ERROR: Directory $SOURCE does not exists." && exit 1
 
-  if [ "$(ls -A "$SOURCE")" ]; then
-    echo "Preparing to upload files in $SOURCE"
-  else
-    echo "Directory '$SOURCE' is empty. Ensure the path is correct and that the project is built prior to running this action."
-    exit 1
-  fi
+[ ! -d "$SOURCE" ] && echo "ERROR: Directory $SOURCE does not exists." && exit 1
 
-  aws --version
+if [ "$(ls -A "$SOURCE")" ]; then
+  echo "Preparing to upload files in $SOURCE"
+else
+  echo "Directory '$SOURCE' is empty. Ensure the path is correct and that the project is built prior to running this action."
+  exit 1
+fi
 
-  aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile qcs-cdn
-  aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile qcs-cdn
+aws --version
 
-  if [[ $(aws s3 ls "s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION" | head) ]]; then
-    echo -e "s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION already exists, will NOT upload to this one";
-    exit 1
-  fi
+aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile qcs-cdn
+aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile qcs-cdn
 
-  echo ""
-  echo "|-----------------------|"
-  echo "| Deploying to CDN      |"
-  echo "|-----------------------|"
+if [[ $(aws s3 ls "s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION" | head) ]]; then
+  echo -e "s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION already exists, will NOT upload to this one";
+  exit 1
+fi
 
-  local dryrun
-  [[ $DRY_RUN = "true" ]] && dryrun="--dryrun" || dryrun=""
-  local delete_flag
-  [[ $WITH_DELETE = "true" ]] && delete_flag="--delete" || delete_flag=""
+echo ""
+echo "|-----------------------|"
+echo "| Deploying to CDN      |"
+echo "|-----------------------|"
 
-  # sync individual files?
-  if [[ -n "$FILES" ]]; then
-    local -a files=()
-    IFS=',' read -r -a files <<< "$FILES"
-    for file in "${files[@]}"; do
-      eval "aws $dryrun --profile qcs-cdn s3 cp $SOURCE/$file s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION --cache-control $CACHE_CONTROL"
-    done
-  else
-    # sync whole source folder
-    eval "aws $dryrun --profile qcs-cdn s3 sync $SOURCE s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION --exclude \"*.map\" $delete_flag --cache-control $CACHE_CONTROL"
-  fi
+dryrun=""
+[[ $DRY_RUN = "true" ]] && dryrun="--dryrun"
+delete_flag=""
+[[ $WITH_DELETE = "true" ]] && delete_flag="--delete"
 
-  if [[ $DRY_RUN ]]; then
-    echo "This is a dry-run, nothing was uploaded"
-  else
-    echo "Version $VERSION of $QMFE_ID is now published to s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/"
-  fi
-}
+# sync individual files?
+if [[ -n "$FILES" ]]; then
+  files=()
+  IFS=',' read -r -a files <<< "$FILES"
+  for file in "${files[@]}"; do
+    eval "aws $dryrun --profile qcs-cdn s3 cp $SOURCE/$file s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION --cache-control $CACHE_CONTROL"
+  done
+else
+  # sync whole source folder
+  eval "aws $dryrun --profile qcs-cdn s3 sync $SOURCE s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION --exclude \"*.map\" $delete_flag --cache-control $CACHE_CONTROL"
+fi
 
-run "$@"
+if [[ $DRY_RUN ]]; then
+  echo "This is a dry-run, nothing was uploaded"
+else
+  echo "Version $VERSION of $QMFE_ID is now published to s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/"
+fi
