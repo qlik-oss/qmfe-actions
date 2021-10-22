@@ -15,7 +15,7 @@ jobs:
       - name: Test qmfe-to-aws action
         uses: qlik-oss/qmfe-actions/qmfe-to-aws@v1
         with:
-          aws-bucket-name: qcs-stage-cdn.qlikcloud.com
+          aws-bucket-name: ${{ secrets.S3_BUCKET }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           qmfe-id: "test"
@@ -26,7 +26,7 @@ jobs:
       - name: Test qmfe-to-aws action with files
         uses: qlik-oss/qmfe-actions/qmfe-to-aws@v1
         with:
-          aws-bucket-name: qcs-stage-cdn.qlikcloud.com
+          aws-bucket-name: ${{ secrets.S3_BUCKET }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           source: ./dist
@@ -57,7 +57,7 @@ jobs:
       - name: Test import-map-to-aws action
         uses: qlik-oss/qmfe-actions/import-map-to-aws@v1
         with:
-          aws-bucket-name: qcs-stage-cdn.qlikcloud.com
+          aws-bucket-name: ${{ secrets.S3_BUCKET }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-distribution-id: ${{ secrets.AWS_DISTRIBUTION_ID }}
@@ -100,18 +100,18 @@ jobs:
           github-repo: qmfe-integration
           cdn-base-path: https://my-cdn.com
           dry-run: "true"
-  # checksum-file-to-aws:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Create fake import-map
-  #       run: |
-  #         echo '{"imports":{"@qmfe/foo":"https://my-cdn.com/qmfe/foo/1.2.3/qmfe-foo.js"}}' > ./import-map.json
-  #     - name: Test checksum-file-to-aws
-  #       uses: qlik-oss/qmfe-actions/checksum-file-to-aws@v1
-  #       with:
-  #         aws-bucket: s3://qcs-stage-cdn.qlikcloud.com/qmfe/checksums
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         file: ./import-map.json
-  #         dry-run: "true"
+  checksum-file-to-aws:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create fake import-map
+        run: |
+          echo '{"imports":{"@qmfe/foo":"https://my-cdn.com/qmfe/foo/1.2.3/qmfe-foo.js"}}' > ./import-map.json
+      - name: Test checksum-file-to-aws
+        uses: qlik-oss/qmfe-actions/checksum-file-to-aws@v1
+        with:
+          aws-bucket: ${{ secrets.S3_CHECKSUM_URL }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          file: ./import-map.json
+          dry-run: "true"
