@@ -110,7 +110,7 @@ jobs:
       - name: Test checksum-file-to-aws
         uses: qlik-oss/qmfe-actions/checksum-file-to-aws@v1
         with:
-          aws-bucket: ${{ secrets.S3_CHECKSUM_URL }}
+          aws-s3-path: ${{ secrets.S3_CHECKSUM_URL }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           file: ./import-map.json
