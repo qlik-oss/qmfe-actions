@@ -35,14 +35,6 @@ if [ -z "$DRY_RUN" ]; then
   DRY_RUN="false"
 fi
 
-echo "Running checksum-file-to-aws with the following environment variables:"
-echo "AWS_S3_PATH                  $AWS_S3_PATH"
-echo "AWS_ACCESS_KEY_ID:          $AWS_ACCESS_KEY_ID"
-echo "AWS_SECRET_ACCESS_KEY:      $AWS_SECRET_ACCESS_KEY"
-echo "FILE:                       $FILE"
-echo "AWS_REGION:                 $AWS_REGION"
-echo "DRY_RUN:                    $DRY_RUN"
-
 dryrun=""
 [[ $DRY_RUN = "true" ]] && dryrun="--dryrun"
 
