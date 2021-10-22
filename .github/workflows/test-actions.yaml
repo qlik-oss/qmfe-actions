@@ -100,3 +100,18 @@ jobs:
           github-repo: qmfe-integration
           cdn-base-path: https://my-cdn.com
           dry-run: "true"
+  # checksum-file-to-aws:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Create fake import-map
+  #       run: |
+  #         echo '{"imports":{"@qmfe/foo":"https://my-cdn.com/qmfe/foo/1.2.3/qmfe-foo.js"}}' > ./import-map.json
+  #     - name: Test checksum-file-to-aws
+  #       uses: qlik-oss/qmfe-actions/checksum-file-to-aws@v1
+  #       with:
+  #         aws-bucket: s3://qcs-stage-cdn.qlikcloud.com/qmfe/checksums
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         file: ./import-map.json
+  #         dry-run: "true"

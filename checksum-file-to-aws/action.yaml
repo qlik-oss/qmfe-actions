@@ -1,0 +1,35 @@
+name: "Upload checksum of a file to aws"
+description: "Computes an md5 checksum on an import-map and uploads an empty file with the checksum as filename"
+author: "anders.nilsson@qlik.com"
+
+inputs:
+  aws-s3-path:
+    description: "The s3 url to path upload to"
+    required: true
+  aws-access-key-id:
+    description: "AWS credentials for S3 bucket"
+    required: true
+  aws-secret-access-key:
+    description: "Access key for the stage CDN"
+    required: true
+  file:
+    description: "path to file name use"
+    required: true
+  aws-region:
+    description: "AWS region for the S3 bucket"
+    required: false
+    default: "us-east-1"
+  dry-run:
+    description: "Run action without actually uploading"
+    required: false
+    default: "false"
+
+runs:
+  using: docker
+  image: Dockerfile
+  env:
+    AWS_S3_PATH: ${{ inputs.aws-s3-path }}
+    AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+    AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
+    FILE: ${{ inputs.file }}
+    AWS_REGION: ${{ inputs.aws-region }}
