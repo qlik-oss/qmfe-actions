@@ -3,8 +3,8 @@ description: "Computes an md5 checksum on an import-map and uploads an empty fil
 author: "anders.nilsson@qlik.com"
 
 inputs:
-  aws-bucket:
-    description: "The bucket to upload to"
+  aws-s3-path:
+    description: "The s3 url to path upload to"
     required: true
   aws-access-key-id:
     description: "AWS credentials for S3 bucket"
@@ -28,7 +28,7 @@ runs:
   using: docker
   image: Dockerfile
   env:
-    AWS_BUCKET: ${{ inputs.aws-bucket }}
+    AWS_S3_PATH: ${{ inputs.aws-s3-path }}
     AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
     AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
     FILE: ${{ inputs.file }}

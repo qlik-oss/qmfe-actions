@@ -7,9 +7,6 @@ err_report() {
 
 trap 'err_report $LINENO' ERR
 
-#!/bin/bash
-set -e
-
 if [ -z "$AWS_ACCESS_KEY_ID" ]; then
   echo "AWS_ACCESS_KEY_ID is not set"
   exit 1
@@ -20,8 +17,8 @@ if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
   exit 1
 fi
 
-if [ -z "$AWS_BUCKET" ]; then
-  echo "AWS_BUCKET is not set"
+if [ -z "$AWS_S3_PATH" ]; then
+  echo "AWS_S3_PATH is not set"
   exit 1
 fi
 
@@ -39,7 +36,7 @@ if [ -z "$DRY_RUN" ]; then
 fi
 
 echo "Running checksum-file-to-aws with the following environment variables:"
-echo "AWS_BUCKET                  $AWS_BUCKET"
+echo "AWS_S3_PATH                  $AWS_S3_PATH"
 echo "AWS_ACCESS_KEY_ID:          $AWS_ACCESS_KEY_ID"
 echo "AWS_SECRET_ACCESS_KEY:      $AWS_SECRET_ACCESS_KEY"
 echo "FILE:                       $FILE"
@@ -57,12 +54,12 @@ aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile "$aws
 checksum=$(md5sum "$FILE" | awk '{ print $1 }')
 echo "" > "$checksum"
 
-if [[ $(aws s3 ls "$AWS_BUCKET/$checksum" --profile $aws_profile | head) ]]; then
-  echo -e "$AWS_BUCKET/$checksum already exists, will NOT upload to this one";
+if [[ $(aws s3 ls "$AWS_S3_PATH/$checksum" --profile $aws_profile | head) ]]; then
+  echo -e "$AWS_S3_PATH/$checksum already exists, will NOT upload to this one";
   rm -rf "$checksum"
   exit 0
 fi
 
-eval "aws s3 cp ./$checksum $AWS_BUCKET/ --region $AWS_REGION --profile $aws_profile $dryrun"
+eval "aws s3 cp ./$checksum $AWS_S3_PATH/ --region $AWS_REGION --profile $aws_profile $dryrun"
 echo "Done, cleaning up"
 rm -rf "$checksum"
