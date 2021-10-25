@@ -4,7 +4,7 @@ author: "anders.nilsson@qlik.com"
 
 inputs:
   aws-bucket-name:
-    description: "The bucket to sync. e.g qcs-prod-cdn.qlikcloud.com"
+    description: "The bucket to sync. e.g bucket.domain.com"
     required: true
   aws-access-key-id:
     description: "AWS credentials for S3 bucket"

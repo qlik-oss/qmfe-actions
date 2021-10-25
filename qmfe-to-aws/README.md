@@ -36,7 +36,7 @@ jobs:
       - name: Upload qmfe package
         uses: qlik-oss/qmfe-to-aws@v1
         with:
-          aws-bucket-name: qcs-stage-cdn.qlikcloud.com
+          aws-bucket-name: bucket.domain.com
           aws-access-key-id: ${{ secrets.MY_SECRET }}
           aws-secret-access-key: ${{ secrets.MY_OTHER_SECRET }}
           qmfe-id: "my-microfrontend"
