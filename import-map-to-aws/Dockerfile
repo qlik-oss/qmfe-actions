@@ -13,4 +13,4 @@ COPY entrypoint.sh /entrypoint.sh
 COPY translate-import-map-to-metrics.js /translate-import-map-to-metrics.js
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/import-map-to-aws.sh"]

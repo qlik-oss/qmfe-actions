@@ -57,22 +57,6 @@ if [ -z "$CACHE_CONTROL" ]; then
   CACHE_CONTROL='public,max-age=31536000,s-maxage=2629800,immutable'
 fi
 
-echo "Running qmfe-to-aws with the following environment variables:"
-echo "AWS_ACCESS_KEY_ID:      $AWS_ACCESS_KEY_ID"
-echo "AWS_SECRET_ACCESS_KEY:  $AWS_SECRET_ACCESS_KEY"
-echo "AWS_BUCKET_NAME         $AWS_BUCKET_NAME"
-echo "AWS_REGION              $AWS_REGION"
-echo "QMFE_ID:                $QMFE_ID"
-echo "VERSION:                $VERSION"
-echo "SOURCE:                 $SOURCE"
-echo "FILES:                  $FILES"
-echo "S3_KEY:                 $S3_KEY"
-echo "WITH_DELETE:            $WITH_DELETE"
-echo "DRY_RUN:                $DRY_RUN"
-echo "CACHE_CONTROL:          $CACHE_CONTROL"
-echo ""
-
-
 [ ! -d "$SOURCE" ] && echo "ERROR: Directory $SOURCE does not exists." && exit 1
 
 if [ "$(ls -A "$SOURCE")" ]; then
