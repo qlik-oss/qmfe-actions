@@ -22,12 +22,6 @@ if [ -z "$GITHUB_TOKEN" ]; then
   exit 1
 fi
 
-echo "Running clean-up-cancelled with the following environment variables:"
-echo "REPOSITORY:         $REPOSITORY"
-echo "WORKFLOW_NAME:      $WORKFLOW_NAME"
-echo "GITHUB_TOKEN        $GITHUB_TOKEN"
-echo ""
-
 repository_url="https://api.github.com/repos/$REPOSITORY/"
 workflow_url="${repository_url}actions/workflows/$WORKFLOW_NAME.yaml/runs?status=cancelled\&per_page=1"
 header_auth="Authorization: token $GITHUB_TOKEN"

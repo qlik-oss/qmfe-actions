@@ -39,14 +39,6 @@ if [ -z "$QMFE_OVERRIDE" ]; then
   echo "QMFE_OVERRIDE is not set, tests will run without any overrides"
 fi
 
-echo "Running system-tests with the following environment variables:"
-echo "DOCKER_IMAGE:       $DOCKER_IMAGE"
-echo "DOCKER_USERNAME:    $DOCKER_USERNAME"
-echo "DOCKER_PWD:         $DOCKER_PWD"
-echo "WDURL:              $WDURL"
-echo "SUITE:              $SUITE"
-echo "QMFE_OVERRIDE:      $QMFE_OVERRIDE"
-
 echo "import-map overrides that will be used in test run: $QMFE_OVERRIDE"
 
 # Check if QMFE_OVERRIDE is path to import-map
