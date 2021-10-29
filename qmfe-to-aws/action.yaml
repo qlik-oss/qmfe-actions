@@ -39,6 +39,10 @@ inputs:
     description: "Run action without actually uploading"
     required: false
     default: "false"
+  include-sourcemaps:
+    description: "Also uploads sourcemaps to S3 bucket"
+    required: false
+    default: "false"
   cache-control:
     description: "Cache control headers"
     required: false
@@ -59,4 +63,5 @@ runs:
     AWS_REGION: ${{ inputs.aws-region }}
     WITH_DELETE: ${{ inputs.with-delete }}
     DRY_RUN: ${{ inputs.dry-run }}
+    INCLUDE_SOURCEMAPS: ${{ inputs.include-sourcemaps }}
     CACHE_CONTROL: ${{ inputs.cache-control }}

@@ -57,6 +57,10 @@ if [ -z "$CACHE_CONTROL" ]; then
   CACHE_CONTROL='public,max-age=31536000,s-maxage=2629800,immutable'
 fi
 
+if [ -z "$INCLUDE_SOURCEMAPS" ]; then
+  INCLUDE_SOURCEMAPS='false'
+fi
+
 [ ! -d "$SOURCE" ] && echo "ERROR: Directory $SOURCE does not exists." && exit 1
 
 if [ "$(ls -A "$SOURCE")" ]; then
@@ -83,8 +87,12 @@ echo "|-----------------------|"
 
 dryrun=""
 [[ $DRY_RUN = "true" ]] && dryrun="--dryrun"
+
 delete_flag=""
 [[ $WITH_DELETE = "true" ]] && delete_flag="--delete"
+
+exclude_sourcemaps="--exclude \"*.map\""
+[[ $INCLUDE_SOURCEMAPS = "true" ]] && exclude_sourcemaps=""
 
 # sync individual files?
 if [[ -n "$FILES" ]]; then
@@ -92,10 +100,14 @@ if [[ -n "$FILES" ]]; then
   IFS=',' read -r -a files <<< "$FILES"
   for file in "${files[@]}"; do
     eval "aws $dryrun --profile qcs-cdn s3 cp $SOURCE/$file s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION --cache-control $CACHE_CONTROL"
+    # source map? file.js -> file.js.map
+    if [ $INCLUDE_SOURCEMAPS = "true" ] && [ -f "$SOURCE/$file.map" ]; then
+      eval "aws $dryrun --profile qcs-cdn s3 cp $SOURCE/$file.map s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION --cache-control $CACHE_CONTROL"
+    fi
   done
 else
   # sync whole source folder
-  eval "aws $dryrun --profile qcs-cdn s3 sync $SOURCE s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION --exclude \"*.map\" $delete_flag --cache-control $CACHE_CONTROL"
+  eval "aws $dryrun --profile qcs-cdn s3 sync $SOURCE s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION $exclude_sourcemaps $delete_flag --cache-control $CACHE_CONTROL"
 fi
 
 if [[ $DRY_RUN ]]; then
