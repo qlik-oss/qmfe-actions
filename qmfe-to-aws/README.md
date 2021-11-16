@@ -21,6 +21,7 @@ The files in the `source` directory will end up in `s3://<aws-bucket-name>/<s3-k
 | `with-delete`           | If you want to use the [_--delete_ flag] in sync call     | **FALSE** | 'true'      |
 | `include-sourcemaps`    | also uploads sourcemaps to S3 bucket                      | **FALSE** | 'false'     |
 | `cache-control`         | Set cache-control header                                  | **FALSE** | `*`         |
+| `allow-overwrite`       | allows existing files to be overwritten                   | **FALSE** | 'false'     |
 
 `*`: cache-control defaults to `public,max-age=31536000,s-maxage=2629800,immutable`
 
