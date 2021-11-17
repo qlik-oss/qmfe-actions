@@ -79,7 +79,7 @@ aws --version
 aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile qcs-cdn
 aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile qcs-cdn
 
-if [[ $ALLOW_OVERWRITE = "false" ]] && [[ $(aws s3 ls "s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION" | head) ]]; then
+if [[ $ALLOW_OVERWRITE == "false" ]] && [[ $(aws s3 ls "s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION" | head) ]]; then
   echo -e "s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION already exists, will NOT upload to this one";
   exit 1
 fi
