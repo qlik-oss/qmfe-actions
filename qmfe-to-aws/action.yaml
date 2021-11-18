@@ -47,6 +47,10 @@ inputs:
     description: "Cache control headers"
     required: false
     default: "public,max-age=31536000,s-maxage=2629800,immutable"
+  allow-overwrite:
+    description: "If true, allows existing files to be overwritten (Danger! Use with CAUTION)"
+    required: false
+    default: "false"
 
 runs:
   using: docker
@@ -65,3 +69,4 @@ runs:
     DRY_RUN: ${{ inputs.dry-run }}
     INCLUDE_SOURCEMAPS: ${{ inputs.include-sourcemaps }}
     CACHE_CONTROL: ${{ inputs.cache-control }}
+    ALLOW_OVERWRITE: ${{ inputs.allow-overwrite }}
