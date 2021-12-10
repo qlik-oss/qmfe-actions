@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from "fs";
 
-type ImportMap = { imports: Record<string, string> };
+export type ImportMap = { imports: Record<string, string> };
 
 type UpdateImportMapArgs = {
   cdnBasePath: string;
@@ -15,6 +15,10 @@ type UpdateImportMapArgs = {
 
 export function readImportMap(): ImportMap {
   return JSON.parse(readFileSync("import-map.json", "utf8"));
+}
+
+export function formatImportMap(importMapString: string) {
+  return importMapString.replace(/,\n+/g, ",\n\n");
 }
 
 export function updateImportMap({
@@ -40,7 +44,8 @@ export function updateImportMap({
     importMap.imports[`@${namespace}/${qmfeId}`] = newUrl;
   }
 
-  const updatedImportMap = `${JSON.stringify(importMap, null, 2)}\n`;
+  const importMapString = `${JSON.stringify(importMap, null, 2)}\n`;
+  let updatedImportMap = formatImportMap(importMapString);
   if (!dryRun) {
     writeFileSync("import-map.json", updatedImportMap);
   }
