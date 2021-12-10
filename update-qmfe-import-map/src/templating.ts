@@ -22,7 +22,8 @@ export function templatePullRequestBody(
     const resultText = templatePRBody(templateArgs);
     return resultText;
   } catch (error) {
-    core.error(`Error when creating PR body from template: ${error.message}`);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    core.error(`Error when creating PR body from template: ${message}`);
     throw error;
   }
 }

@@ -41,7 +41,9 @@ async function run(): Promise<void> {
     await gh.createPullRequest();
     core.info(dryRun ? "[Dry run] Success!" : "Success!");
   } catch (error) {
-    core.setFailed(error.message);
+    const message =
+      error instanceof Error ? error.message : "An unknown error occurred.";
+    core.setFailed(message);
   }
 }
 

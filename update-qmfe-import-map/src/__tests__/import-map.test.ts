@@ -1,4 +1,4 @@
-import { readImportMap, updateImportMap } from "../import-map";
+import { readImportMap, updateImportMap, formatImportMap } from "../import-map";
 import fs from "fs";
 import {
   describe,
@@ -9,7 +9,7 @@ import {
   afterAll,
 } from "@jest/globals";
 
-let wd;
+let wd: string;
 
 const cdnBasePath = "https://cdn.qlik-stage.com";
 
@@ -19,6 +19,9 @@ describe("Update ImportMap", () => {
     const importMapFs = {
       imports: {
         "@qmfe/hub": "https://cdn.qlik-stage.com/qmfe/hub/2.0.231/qmfe-hub.js",
+
+        "@qmfe/console":
+          "https://cdn.qlik-stage.com/qmfe/console/2.0.231/qmfe-console.js",
       },
     };
     fs.mkdirSync("./test-temp");
@@ -38,6 +41,56 @@ describe("Update ImportMap", () => {
     expect(importMap.imports["@qmfe/hub"]).toEqual(
       "https://cdn.qlik-stage.com/qmfe/hub/2.0.231/qmfe-hub.js"
     );
+  });
+
+  describe("formatImportMap", () => {
+    test("should ensure one newline between entries", () => {
+      const importMapString = JSON.stringify(
+        {
+          imports: {
+            "@qmfe/hub":
+              "https://cdn.qlik-stage.com/qmfe/hub/2.0.231/qmfe-hub.js",
+            "@qmfe/console":
+              "https://cdn.qlik-stage.com/qmfe/console/2.0.231/qmfe-console.js",
+          },
+        },
+        null,
+        2
+      );
+
+      const expected = `{
+  \"imports\": {
+    \"@qmfe/hub\": \"https://cdn.qlik-stage.com/qmfe/hub/2.0.231/qmfe-hub.js\",
+
+    \"@qmfe/console\": \"https://cdn.qlik-stage.com/qmfe/console/2.0.231/qmfe-console.js\"
+  }
+}`;
+
+      let formattedImportMap = formatImportMap(importMapString);
+
+      expect(formattedImportMap).toEqual(expected);
+
+      formattedImportMap = formatImportMap(formattedImportMap);
+      formattedImportMap = formatImportMap(formattedImportMap);
+      formattedImportMap = formatImportMap(formattedImportMap);
+      formattedImportMap = formatImportMap(formattedImportMap);
+      formattedImportMap = formatImportMap(formattedImportMap);
+
+      expect(formattedImportMap).toEqual(expected);
+
+      expect(
+        formatImportMap(`{
+  \"imports\": {
+    \"@qmfe/hub\": \"https://cdn.qlik-stage.com/qmfe/hub/2.0.231/qmfe-hub.js\",
+
+
+
+
+    \"@qmfe/console\": \"https://cdn.qlik-stage.com/qmfe/console/2.0.231/qmfe-console.js\"
+  }
+}`)
+      ).toEqual(expected);
+    });
   });
 
   describe("Add stuff to import-map", () => {

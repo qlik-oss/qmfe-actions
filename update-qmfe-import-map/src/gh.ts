@@ -91,7 +91,7 @@ export class GH {
     try {
       await Promise.all(targets);
     } catch (err) {
-      core.info(err);
+      core.info(JSON.stringify(err));
     }
   }
 
