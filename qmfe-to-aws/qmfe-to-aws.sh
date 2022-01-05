@@ -114,7 +114,7 @@ else
   eval "aws $dryrun --profile qcs-cdn s3 sync $SOURCE s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/ --region $AWS_REGION $exclude_sourcemaps $delete_flag --cache-control $CACHE_CONTROL"
 fi
 
-if [[ $DRY_RUN ]]; then
+if [[ $DRY_RUN = "true" ]]; then
   echo "This is a dry-run, nothing was uploaded"
 else
   echo "Version $VERSION of $QMFE_ID is now published to s3://$AWS_BUCKET_NAME/$S3_KEY/$QMFE_ID/$VERSION/"
