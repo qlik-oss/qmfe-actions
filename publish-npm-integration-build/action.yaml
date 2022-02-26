@@ -1,16 +1,14 @@
 name: "Publish an NPM integration build"
-description: "Publishes an integration build to the GitHub package registry"
+description: "Publishes an integration build to the configured package registry"
 author: "egill.sveinbjornsson@qlik.com"
 
 inputs:
   build-script:
     description: "The full command to build the projects NPM package. Example: 'npm run build'"
-    required: true
-    default: "npm run build"
+    required: false
   dist-folder:
     description: "Name of the folder to publish"
     required: false
-    default: ""
   include-types:
     description: "Whether to enforce the inclusion of type declarations in the package"
     required: false
@@ -35,6 +33,7 @@ runs:
 
     - name: Run build script
       shell: bash
+      if: ${{ inputs.build-script }}
       run: ${{ inputs.build-script }}
 
     - name: Publish integration package
