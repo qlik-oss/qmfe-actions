@@ -4,12 +4,13 @@ Publishes an integration (pre-release) npm package to the configured package reg
 
 ## Inputs
 
-| Key             | Description                                                          | Required  | Default           |
-| --------------- | -------------------------------------------------------------------- | --------- | ----------------- |
-| `build-script`  | The full command to build the projects NPM package                   | **TRUE**  | `"npm run build"` |
-| `dist-folder`   | Name of the folder to publish                                        | **TRUE**  | `""`              |
-| `include-types` | Whether to enforce the inclusion of type declarations in the package | **FALSE** | `"true"`          |
-| `dry-run`       | Skips the actual publishing steps, mainly for testing the action     | **FALSE** | `"false"`         |
+| Key             | Description                                                                                               | Required  | Default   |
+| --------------- | --------------------------------------------------------------------------------------------------------- | --------- | --------- |
+| `dist-folder`   | Path to the folder to publish                                                                             | **TRUE**  |           |
+| `build-script`  | The full command to build the projects NPM package.                                                       | **FALSE** | `""`      |
+| `enforce-types` | Whether to enforce the inclusion of type declarations in the package                                      | **FALSE** | `"true"`  |
+| `include-types` | Makes the step fail if no type declarations are found in the package. **Deprecated**: use `enforce-types` | **FALSE** | `"true"`  |
+| `dry-run`       | Skips the actual publishing steps, mainly for testing the action                                          | **FALSE** | `"false"` |
 
 ## Example usage
 
@@ -25,12 +26,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: "16"
           cache: npm
       - run: npm install
+      - run: npm run build-npm
       - name: Publish integration build
         uses: qlik-oss/publish-npm-integration-build@v1
         with:
-          build-script: npm run build-npm
           dist-folder: "./dist-types"
 ```

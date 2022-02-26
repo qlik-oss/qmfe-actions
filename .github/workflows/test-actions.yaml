@@ -72,12 +72,19 @@ jobs:
       - uses: actions/checkout@v2
       - name: Create fake package.json
         run: |
-          echo '{"name": "test-project", "version": "0.0.1", "scripts": { "build-npm": "mkdir ./dist-types && cp package.json ./dist-types" } }' > ./package.json
-      - name: Test publish-npm-integration-build action
+          echo '{"name": "test-project", "version": "0.0.1", "scripts": { "build-npm": "mkdir -p ./dist-types && cp package.json ./dist-types" } }' > ./package.json
+      - run: npm run build-npm
+      - name: Test publish-npm-integration-build action without build script
         uses: qlik-oss/qmfe-actions/publish-npm-integration-build@v1
         with:
-          build-script: npm run build-npm
           dist-folder: "./dist-types"
+          include-types: "false"
+          dry-run: "true"
+      - name: Test publish-npm-integration-build action with build script
+        uses: qlik-oss/qmfe-actions/publish-npm-integration-build@v1
+        with:
+          dist-folder: "./dist-types"
+          build-script: npm run build-npm
           include-types: "false"
           dry-run: "true"
   update-qmfe-import-map:
