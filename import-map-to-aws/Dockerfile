@@ -1,5 +1,5 @@
 # Container image that runs your code
-FROM amazon/aws-cli:2.4.21
+FROM amazon/aws-cli:2.4.23
 
 # add jq to image
 RUN yum update -y \
