@@ -111,9 +111,19 @@ cdn_urls=()
 
 while IFS='' read -r line; do cdn_urls+=("$line"); done < <(jq -r '.imports | values[]' deploy-import-map.json)
 echo "Validate that import-map entries are pointing to files that exist"
+
 for url in "${cdn_urls[@]}"; do
     if [[ "$url" == */ ]]; then
         # skip this check if url entry points to folder
+        continue
+    fi
+
+    regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+    if [[ "$url" =~ $regex ]]
+    then
+        echo "$url is a valid url, verifying existance"
+    else
+        # skip this check. might be pointing to a relative url
         continue
     fi
     curl_response=$(curl --head --write-out "%{http_code}\n" --silent --output /dev/null "$url")
