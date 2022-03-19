@@ -53,7 +53,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Create import-map
         run: |
-          echo '{"imports":{"@qmfe/startup":"https://cdn.qlik-stage.com/qmfe/main-web-container/0.22.0/qmfe-startup.js"}}' > ./import-map.json
+          echo '{"imports":{ "@qmfe/bootstrap": "/qmfe-bootstrap.js", "@qmfe/startup":"https://cdn.qlik-stage.com/qmfe/main-web-container/0.22.0/qmfe-startup.js"}}' > ./import-map.json
       - name: Test import-map-to-aws action
         uses: qlik-oss/qmfe-actions/import-map-to-aws@v1
         with:
