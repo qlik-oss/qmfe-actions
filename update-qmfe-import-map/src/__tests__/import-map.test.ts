@@ -164,10 +164,10 @@ describe("Update ImportMap", () => {
       });
       const updatedJson = JSON.parse(updated);
       expect(updatedJson.imports["@qlik-trial/bar"]).toEqual(
-        "https://cdn.qlik-stage.com/qmfe/foo/1.0.123/qlik-trial-bar.js"
+        "https://cdn.qlik-stage.com/qmfe/foo/1.0.123/bar.js"
       );
       expect(updatedJson.imports["@qlik-trial/baz"]).toEqual(
-        "https://cdn.qlik-stage.com/qmfe/foo/1.0.123/qlik-trial-baz.js"
+        "https://cdn.qlik-stage.com/qmfe/foo/1.0.123/baz.js"
       );
     });
 
