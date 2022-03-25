@@ -33,7 +33,7 @@ export function updateImportMap({
 }: UpdateImportMapArgs): string {
   if (qmfeModules && qmfeModules.length) {
     for (const componentId of qmfeModules) {
-      const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${namespace}-${componentId}.js`;
+      const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${componentId}.js`;
       importMap.imports[`@${namespace}/${componentId}`] = newUrl;
     }
   } else if (hasSubmodules) {
