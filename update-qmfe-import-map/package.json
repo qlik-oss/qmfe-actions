@@ -24,11 +24,11 @@
   "devDependencies": {
     "@types/jest": "27.4.1",
     "@types/node": "16.11.26",
-    "esbuild": "0.14.27",
+    "esbuild": "0.14.28",
     "esbuild-jest": "0.5.0",
     "jest": "27.5.1",
-    "prettier": "2.6.0",
-    "typescript": "4.6.2"
+    "prettier": "2.6.1",
+    "typescript": "4.6.3"
   },
   "jest": {
     "transform": {
