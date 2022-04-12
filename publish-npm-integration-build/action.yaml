@@ -9,7 +9,7 @@ inputs:
   dist-folder:
     description: "Name of the folder to publish"
     required: false
-  include-types:
+  enforce-types:
     description: "Whether to enforce the inclusion of type declarations in the package"
     required: false
     default: "true"
@@ -39,7 +39,7 @@ runs:
     - name: Publish integration package
       shell: bash
       run: |
-        if [[ "${{ inputs.include-types }}" = "true" ]]; then
+        if [[ "${{ inputs.enforce-types }}" = "true" ]]; then
           # make sure we have .d.ts files in our package
           DTS=`npm publish ${{ inputs.dist-folder }} --dry-run --ignore-script 2>&1 | grep d.ts | wc -l`
           echo "# of *.d.ts files is $DTS"
