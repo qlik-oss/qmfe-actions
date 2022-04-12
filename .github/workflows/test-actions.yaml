@@ -78,14 +78,14 @@ jobs:
         uses: qlik-oss/qmfe-actions/publish-npm-integration-build@v1
         with:
           dist-folder: "./dist-types"
-          include-types: "false"
+          enforce-types: "false"
           dry-run: "true"
       - name: Test publish-npm-integration-build action with build script
         uses: qlik-oss/qmfe-actions/publish-npm-integration-build@v1
         with:
           dist-folder: "./dist-types"
           build-script: npm run build-npm
-          include-types: "false"
+          enforce-types: "false"
           dry-run: "true"
   update-qmfe-import-map:
     runs-on: ubuntu-latest
