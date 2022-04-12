@@ -9,7 +9,6 @@ Publishes an integration (pre-release) npm package to the configured package reg
 | `dist-folder`   | Path to the folder to publish                                                                             | **TRUE**  |           |
 | `build-script`  | The full command to build the projects NPM package.                                                       | **FALSE** | `""`      |
 | `enforce-types` | Whether to enforce the inclusion of type declarations in the package                                      | **FALSE** | `"true"`  |
-| `include-types` | Makes the step fail if no type declarations are found in the package. **Deprecated**: use `enforce-types` | **FALSE** | `"true"`  |
 | `dry-run`       | Skips the actual publishing steps, mainly for testing the action                                          | **FALSE** | `"false"` |
 
 ## Example usage
