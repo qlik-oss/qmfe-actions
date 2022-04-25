@@ -23,8 +23,8 @@
   },
   "devDependencies": {
     "@types/jest": "27.4.1",
-    "@types/node": "16.11.27",
-    "esbuild": "0.14.36",
+    "@types/node": "16.11.28",
+    "esbuild": "0.14.38",
     "esbuild-jest": "0.5.0",
     "jest": "27.5.1",
     "prettier": "2.6.2",
