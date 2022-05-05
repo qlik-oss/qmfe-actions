@@ -177,10 +177,12 @@ else
       echo "(dryrun) $command"
       echo "(dryrun) curl $IMPORT_MAP_URL"
     else
+      set +e
       echo "invalidating import-map.json file at cloudfront"
       eval "$command"
       # curl the file to warm up the cache
       curl "$IMPORT_MAP_URL"
+      set -e
     fi
   fi
 fi
