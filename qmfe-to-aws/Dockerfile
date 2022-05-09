@@ -1,5 +1,5 @@
 # Container image that runs your code
-FROM amazon/aws-cli:2.6.1
+FROM amazon/aws-cli:2.6.3
 
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
