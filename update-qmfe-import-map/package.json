@@ -15,16 +15,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@actions/core": "1.8.0",
+    "@actions/core": "1.8.2",
     "@actions/exec": "1.1.1",
-    "@actions/github": "5.0.1",
+    "@actions/github": "5.0.3",
     "@octokit/rest": "18.12.0",
-    "dotenv": "16.0.0"
+    "dotenv": "16.0.1"
   },
   "devDependencies": {
-    "@types/jest": "27.5.0",
-    "@types/node": "16.11.33",
-    "esbuild": "0.14.38",
+    "@types/jest": "27.5.1",
+    "@types/node": "16.11.35",
+    "esbuild": "0.14.39",
     "esbuild-jest": "0.5.0",
     "jest": "28.1.0",
     "prettier": "2.6.2",
