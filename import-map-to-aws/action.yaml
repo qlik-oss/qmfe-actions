@@ -45,7 +45,7 @@ inputs:
     required: false
     default: "import-map.json"
 outputs:
-  import-map-state: 
+  import-map-locked-state:
     description: "Outputs wether the import-map is in locked state or not"
 
 runs:
