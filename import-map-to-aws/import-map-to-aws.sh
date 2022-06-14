@@ -160,7 +160,7 @@ fi
 if [[ "$locked" == "\"true\"" ]]; then
   echo "$aws_s3_bucket_import_map_url is locked - new version of import-map could not be applied."
   # Set output to locked
-  echo "::set-output name=import-map-state::locked"
+  locked="true"
 else
   echo "Deploy import-map to $aws_s3_bucket_import_map_url"
   aws s3 cp deploy-import-map.json "$aws_s3_bucket_import_map_url" --cache-control "$CACHE_CONTROL" --profile $aws_profile --region $AWS_REGION $dryrun
@@ -186,3 +186,5 @@ else
     fi
   fi
 fi
+
+echo "::set-output name=import-map-state::$locked"
