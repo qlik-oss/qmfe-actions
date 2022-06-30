@@ -9,7 +9,7 @@ async function run(): Promise<void> {
     const dryRun = core.getInput("dry-run") === "true";
     const namespace = core.getInput("namespace") || "qmfe";
     const qmfeId = core.getInput("qmfe-id");
-    const qmfeRepo = core.getInput("qmfe-repo");
+    const repo = core.getInput("repo");
     const githubTeam = core.getInput("github-team");
     const githubToken = core.getInput("github-token");
     const githubOrg = core.getInput("github-org");
@@ -28,7 +28,7 @@ async function run(): Promise<void> {
       qmfeModules,
       namespace,
       qmfeId,
-      qmfeRepo,
+      repo,
       githubTeam,
       githubToken,
       githubOrg,

@@ -17,11 +17,11 @@ Refer to the release for more: <https://github.com/my-org/my-component/releases/
 `);
   });
 
-  test("should template PR body (with qmfeRepo)", () => {
+  test("should template PR body (with repo)", () => {
     const templateArgs = {
       namespace: "qmfe",
       qmfeId: "my-component",
-      qmfeRepo: "repo-name",
+      repo: "repo-name",
       newVersion: "1.2.3",
       githubOrg: "my-org",
     };

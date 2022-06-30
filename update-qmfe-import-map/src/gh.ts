@@ -9,7 +9,7 @@ type Options = {
   qmfeModules: string[] | null;
   namespace: string;
   qmfeId: string;
-  qmfeRepo?: string;
+  repo?: string;
   githubTeam: string;
   githubToken: string;
   githubOrg: string;
@@ -101,7 +101,7 @@ export class GH {
       cdnBasePath,
       qmfeModules,
       qmfeId,
-      qmfeRepo,
+      repo,
       namespace,
       version,
       hasSubmodules,
@@ -118,7 +118,7 @@ export class GH {
     const GIT_MSG = `chore(release): update ${componentName} to ${version}`;
     const PR_BODY = templatePullRequestBody({
       qmfeId,
-      qmfeRepo,
+      repo,
       newVersion: version,
       githubOrg,
     });

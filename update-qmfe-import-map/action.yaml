@@ -18,7 +18,7 @@ inputs:
   qmfe-submodules:
     description: "Set to true if this package is exposing submodules inside the package"
     required: false
-  qmfe-repo:
+  repo:
     description: "Repository of the module being updated. Used for example in the link to changelogs because the repo name might differ from the module id. Defaults to the qmfe-id value."
     required: false
   github-team:

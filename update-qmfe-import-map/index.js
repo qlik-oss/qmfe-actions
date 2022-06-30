@@ -7863,7 +7863,7 @@ var core2 = __toESM(require_core());
 var templatePRBody = (it) => {
   return `Bumps \`${it.qmfeId}\` to \`${it.newVersion}\`.
 
-Refer to the release for more: <https://github.com/${it.githubOrg}/${it.qmfeRepo || it.qmfeId}/releases/tag/v${it.newVersion}>
+Refer to the release for more: <https://github.com/${it.githubOrg}/${it.repo || it.qmfeId}/releases/tag/v${it.newVersion}>
 `;
 };
 function templatePullRequestBody(templateArgs) {
@@ -7984,7 +7984,7 @@ var GH = class {
         cdnBasePath,
         qmfeModules,
         qmfeId,
-        qmfeRepo,
+        repo,
         namespace,
         version,
         hasSubmodules,
@@ -8001,7 +8001,7 @@ var GH = class {
       const GIT_MSG = `chore(release): update ${componentName} to ${version}`;
       const PR_BODY = templatePullRequestBody({
         qmfeId,
-        qmfeRepo,
+        repo,
         newVersion: version,
         githubOrg
       });
@@ -8057,7 +8057,7 @@ function run() {
       const dryRun = core4.getInput("dry-run") === "true";
       const namespace = core4.getInput("namespace") || "qmfe";
       const qmfeId = core4.getInput("qmfe-id");
-      const qmfeRepo = core4.getInput("qmfe-repo");
+      const repo = core4.getInput("repo");
       const githubTeam = core4.getInput("github-team");
       const githubToken = core4.getInput("github-token");
       const githubOrg = core4.getInput("github-org");
@@ -8072,7 +8072,7 @@ function run() {
         qmfeModules,
         namespace,
         qmfeId,
-        qmfeRepo,
+        repo,
         githubTeam,
         githubToken,
         githubOrg,
