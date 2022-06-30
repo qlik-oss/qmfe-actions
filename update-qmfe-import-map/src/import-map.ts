@@ -5,7 +5,7 @@ export type ImportMap = { imports: Record<string, string> };
 type UpdateImportMapArgs = {
   cdnBasePath: string;
   importMap: ImportMap;
-  namespace: string;
+  qmfeNamespace: string;
   qmfeId: string;
   version: string;
   qmfeModules: string[] | null;
@@ -24,7 +24,7 @@ export function formatImportMap(importMapString: string) {
 export function updateImportMap({
   cdnBasePath,
   importMap,
-  namespace,
+  qmfeNamespace,
   qmfeId,
   version,
   qmfeModules = null,
@@ -34,14 +34,14 @@ export function updateImportMap({
   if (qmfeModules && qmfeModules.length) {
     for (const componentId of qmfeModules) {
       const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${componentId}.js`;
-      importMap.imports[`@${namespace}/${componentId}`] = newUrl;
+      importMap.imports[`@${qmfeNamespace}/${componentId}`] = newUrl;
     }
   } else if (hasSubmodules) {
     const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/`;
-    importMap.imports[`@${namespace}/${qmfeId}/`] = newUrl;
+    importMap.imports[`@${qmfeNamespace}/${qmfeId}/`] = newUrl;
   } else {
-    const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${namespace}-${qmfeId}.js`;
-    importMap.imports[`@${namespace}/${qmfeId}`] = newUrl;
+    const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${qmfeNamespace}-${qmfeId}.js`;
+    importMap.imports[`@${qmfeNamespace}/${qmfeId}`] = newUrl;
   }
 
   const importMapString = `${JSON.stringify(importMap, null, 2)}\n`;

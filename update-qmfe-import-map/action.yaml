@@ -6,7 +6,7 @@ inputs:
   dry-run:
     description: "For debugging purposes. Only logs out the import-map update."
     required: false
-  namespace:
+  qmfe-namespace:
     description: "The components namespace, defaults to 'qmfe' and will cause the component name to be @namespace/qmfe-id"
     required: false
   qmfe-id:

@@ -103,7 +103,7 @@ describe("Update ImportMap", () => {
       const updated = updateImportMap({
         cdnBasePath,
         importMap,
-        namespace: "qmfe",
+        qmfeNamespace: "qmfe",
         qmfeId: "hub",
         version: "2.2.2",
         qmfeModules: [],
@@ -120,7 +120,7 @@ describe("Update ImportMap", () => {
       const updated = updateImportMap({
         cdnBasePath,
         importMap,
-        namespace: "qlik-trial",
+        qmfeNamespace: "qlik-trial",
         qmfeId: "foo",
         version: "1.0.123",
         qmfeModules: null,
@@ -137,7 +137,7 @@ describe("Update ImportMap", () => {
       const updated = updateImportMap({
         cdnBasePath,
         importMap,
-        namespace: "qlik-trial",
+        qmfeNamespace: "qlik-trial",
         qmfeId: "foo",
         version: "1.0.123",
         qmfeModules: null,
@@ -155,7 +155,7 @@ describe("Update ImportMap", () => {
       const updated = updateImportMap({
         cdnBasePath,
         importMap,
-        namespace: "qlik-trial",
+        qmfeNamespace: "qlik-trial",
         qmfeId: "foo",
         version: "1.0.123",
         qmfeModules: ["bar", "baz"],
@@ -175,7 +175,7 @@ describe("Update ImportMap", () => {
       updateImportMap({
         cdnBasePath,
         importMap,
-        namespace: "qmfe",
+        qmfeNamespace: "qmfe",
         qmfeId: "foo",
         version: "1.0.123",
         qmfeModules: null,

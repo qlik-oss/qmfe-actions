@@ -7,7 +7,7 @@ import { updateImportMap, readImportMap } from "./import-map";
 type Options = {
   cdnBasePath: string;
   qmfeModules: string[] | null;
-  namespace: string;
+  qmfeNamespace: string;
   qmfeId: string;
   repo?: string;
   githubTeam: string;
@@ -74,7 +74,7 @@ export class GH {
     });
 
     const regex = new RegExp(
-      `chore\\(release\\): update @${this.opts.namespace}/${this.opts.qmfeId} to \\d\+\.\\d\+\.\\d\+$`
+      `chore\\(release\\): update @${this.opts.qmfeNamespace}/${this.opts.qmfeId} to \\d\+\.\\d\+\.\\d\+$`
     );
     const targets = openPRs
       .map(({ title, head }) => {
@@ -102,7 +102,7 @@ export class GH {
       qmfeModules,
       qmfeId,
       repo,
-      namespace,
+      qmfeNamespace,
       version,
       hasSubmodules,
       githubToken,
@@ -112,7 +112,7 @@ export class GH {
       dryRun,
     } = this.opts;
     let updatedImportMap: string;
-    const componentName = `@${namespace}/${qmfeId}`;
+    const componentName = `@${qmfeNamespace}/${qmfeId}`;
     const importMap = readImportMap();
     const HEAD_BRANCH = `${componentName}-integration-${version}`;
     const GIT_MSG = `chore(release): update ${componentName} to ${version}`;
@@ -127,7 +127,7 @@ export class GH {
       updatedImportMap = updateImportMap({
         cdnBasePath,
         importMap,
-        namespace,
+        qmfeNamespace,
         qmfeId,
         version,
         qmfeModules,
@@ -145,7 +145,7 @@ export class GH {
     updatedImportMap = updateImportMap({
       cdnBasePath,
       importMap,
-      namespace,
+      qmfeNamespace,
       qmfeId,
       version,
       qmfeModules,

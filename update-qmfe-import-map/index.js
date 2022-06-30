@@ -7888,7 +7888,7 @@ function formatImportMap(importMapString) {
 function updateImportMap({
   cdnBasePath,
   importMap,
-  namespace,
+  qmfeNamespace,
   qmfeId,
   version,
   qmfeModules = null,
@@ -7898,14 +7898,14 @@ function updateImportMap({
   if (qmfeModules && qmfeModules.length) {
     for (const componentId of qmfeModules) {
       const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${componentId}.js`;
-      importMap.imports[`@${namespace}/${componentId}`] = newUrl;
+      importMap.imports[`@${qmfeNamespace}/${componentId}`] = newUrl;
     }
   } else if (hasSubmodules) {
     const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/`;
-    importMap.imports[`@${namespace}/${qmfeId}/`] = newUrl;
+    importMap.imports[`@${qmfeNamespace}/${qmfeId}/`] = newUrl;
   } else {
-    const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${namespace}-${qmfeId}.js`;
-    importMap.imports[`@${namespace}/${qmfeId}`] = newUrl;
+    const newUrl = `${cdnBasePath}/qmfe/${qmfeId}/${version}/${qmfeNamespace}-${qmfeId}.js`;
+    importMap.imports[`@${qmfeNamespace}/${qmfeId}`] = newUrl;
   }
   const importMapString = `${JSON.stringify(importMap, null, 2)}
 `;
@@ -7962,7 +7962,7 @@ var GH = class {
         repo: githubRepo,
         state: "open"
       });
-      const regex = new RegExp(`chore\\(release\\): update @${this.opts.namespace}/${this.opts.qmfeId} to \\d+.\\d+.\\d+$`);
+      const regex = new RegExp(`chore\\(release\\): update @${this.opts.qmfeNamespace}/${this.opts.qmfeId} to \\d+.\\d+.\\d+$`);
       const targets = openPRs.map(({ title, head }) => {
         if (title.match(regex) && title !== currentPRTitle) {
           core3.info(`Matched on ${title}`);
@@ -7985,7 +7985,7 @@ var GH = class {
         qmfeModules,
         qmfeId,
         repo,
-        namespace,
+        qmfeNamespace,
         version,
         hasSubmodules,
         githubToken,
@@ -7995,7 +7995,7 @@ var GH = class {
         dryRun
       } = this.opts;
       let updatedImportMap;
-      const componentName = `@${namespace}/${qmfeId}`;
+      const componentName = `@${qmfeNamespace}/${qmfeId}`;
       const importMap = readImportMap();
       const HEAD_BRANCH = `${componentName}-integration-${version}`;
       const GIT_MSG = `chore(release): update ${componentName} to ${version}`;
@@ -8009,7 +8009,7 @@ var GH = class {
         updatedImportMap = updateImportMap({
           cdnBasePath,
           importMap,
-          namespace,
+          qmfeNamespace,
           qmfeId,
           version,
           qmfeModules,
@@ -8025,7 +8025,7 @@ var GH = class {
       updatedImportMap = updateImportMap({
         cdnBasePath,
         importMap,
-        namespace,
+        qmfeNamespace,
         qmfeId,
         version,
         qmfeModules,
@@ -8055,7 +8055,7 @@ function run() {
     try {
       const cdnBasePath = normalizeBasePath(core4.getInput("cdn-base-path"));
       const dryRun = core4.getInput("dry-run") === "true";
-      const namespace = core4.getInput("namespace") || "qmfe";
+      const qmfeNamespace = core4.getInput("namespace") || core4.getInput("qmfe-namespace") || "qmfe";
       const qmfeId = core4.getInput("qmfe-id");
       const repo = core4.getInput("repo");
       const githubTeam = core4.getInput("github-team");
@@ -8070,7 +8070,7 @@ function run() {
       const gh = new GH({
         cdnBasePath,
         qmfeModules,
-        namespace,
+        qmfeNamespace,
         qmfeId,
         repo,
         githubTeam,
