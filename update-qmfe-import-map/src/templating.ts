@@ -3,6 +3,7 @@ import * as core from "@actions/core";
 type PRBodyTemplateArgs = {
   newVersion: string;
   qmfeId: string;
+  qmfeRepo?: string;
   githubOrg: string;
 };
 
@@ -11,7 +12,9 @@ type PRBodyTemplateArgs = {
 const templatePRBody = (it: PRBodyTemplateArgs): string => {
   return `Bumps \`${it.qmfeId}\` to \`${it.newVersion}\`.
 
-Refer to the release for more: <https://github.com/${it.githubOrg}/${it.qmfeId}/releases/tag/v${it.newVersion}>
+Refer to the release for more: <https://github.com/${it.githubOrg}/${
+    it.qmfeRepo || it.qmfeId
+  }/releases/tag/v${it.newVersion}>
 `;
 };
 

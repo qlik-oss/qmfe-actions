@@ -18,6 +18,9 @@ inputs:
   qmfe-submodules:
     description: "Set to true if this package is exposing submodules inside the package"
     required: false
+  qmfe-repo:
+    description: "Repository of the module being updated. Used for example in the link to changelogs because the repo name might differ from the module id. Defaults to the qmfe-id value."
+    required: false
   github-team:
     description: "Github handle for the team that gets added as a reviewer for the created PR. Useful if teams want to be notified about the update"
     required: true

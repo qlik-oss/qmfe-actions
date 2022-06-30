@@ -9,6 +9,7 @@ type Options = {
   qmfeModules: string[] | null;
   namespace: string;
   qmfeId: string;
+  qmfeRepo?: string;
   githubTeam: string;
   githubToken: string;
   githubOrg: string;
@@ -100,6 +101,7 @@ export class GH {
       cdnBasePath,
       qmfeModules,
       qmfeId,
+      qmfeRepo,
       namespace,
       version,
       hasSubmodules,
@@ -116,6 +118,7 @@ export class GH {
     const GIT_MSG = `chore(release): update ${componentName} to ${version}`;
     const PR_BODY = templatePullRequestBody({
       qmfeId,
+      qmfeRepo,
       newVersion: version,
       githubOrg,
     });
@@ -131,7 +134,7 @@ export class GH {
         hasSubmodules,
         dryRun,
       });
-      core.info("[dryrun] import-map.json updated");
+      core.info("[dry-run] import-map.json updated");
       core.info(updatedImportMap);
       return;
     }

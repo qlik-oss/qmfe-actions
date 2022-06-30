@@ -16,4 +16,20 @@ describe("Templating", () => {
 Refer to the release for more: <https://github.com/my-org/my-component/releases/tag/v1.2.3>
 `);
   });
+
+  test("should template PR body (with qmfeRepo)", () => {
+    const templateArgs = {
+      namespace: "qmfe",
+      qmfeId: "my-component",
+      qmfeRepo: "repo-name",
+      newVersion: "1.2.3",
+      githubOrg: "my-org",
+    };
+
+    const res = templatePullRequestBody(templateArgs);
+    expect(res).toBe(`Bumps \`my-component\` to \`1.2.3\`.
+
+Refer to the release for more: <https://github.com/my-org/repo-name/releases/tag/v1.2.3>
+`);
+  });
 });
