@@ -7,8 +7,11 @@ async function run(): Promise<void> {
   try {
     const cdnBasePath = normalizeBasePath(core.getInput("cdn-base-path"));
     const dryRun = core.getInput("dry-run") === "true";
-    const namespace = core.getInput("namespace") || "qmfe";
+    // TODO: Remove `namespace`
+    const qmfeNamespace =
+      core.getInput("namespace") || core.getInput("qmfe-namespace") || "qmfe";
     const qmfeId = core.getInput("qmfe-id");
+    const repo = core.getInput("repo");
     const githubTeam = core.getInput("github-team");
     const githubToken = core.getInput("github-token");
     const githubOrg = core.getInput("github-org");
@@ -25,8 +28,9 @@ async function run(): Promise<void> {
     const gh = new GH({
       cdnBasePath,
       qmfeModules,
-      namespace,
+      qmfeNamespace,
       qmfeId,
+      repo,
       githubTeam,
       githubToken,
       githubOrg,
