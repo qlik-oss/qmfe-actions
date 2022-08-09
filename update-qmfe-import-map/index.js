@@ -7947,7 +7947,7 @@ var GH = class {
     return __async(this, null, function* () {
       yield (0, import_exec.exec)("git add import-map.json");
       yield (0, import_exec.exec)(`git commit -m "${commitMessage}"`);
-      yield (0, import_exec.exec)(`git push -u origin "${branchName}" --force`);
+      yield (0, import_exec.exec)(`git push -u origin "${branchName}" --force-with-lease`);
     });
   }
   closeOlderPullRequests(githubOrg, githubRepo, currentPRTitle) {
