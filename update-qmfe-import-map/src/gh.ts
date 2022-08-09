@@ -49,15 +49,22 @@ export class GH {
         await exec(`git checkout "${branchName}"`);
       }
       // Ensure workspace is fresh
-      await exec(`git fetch`);
-      await exec(`git reset --hard origin/main`);
     } catch (err) {
       core.info(`Error creating new branch: ${err}`);
+      core.info("Checking out the existing branch instead");
+
+      try {
+        await exec(`git checkout "${branchName}"`);
+        await exec("git fetch");
+        await exec("git reset --hard origin/main");
+      } catch (err2) {
+        core.info(`Could not use branch ${branchName}`);
+      }
     }
   }
 
   async commitChanges(commitMessage: string, branchName: string) {
-    await exec(`git add import-map.json`);
+    await exec("git add import-map.json");
     await exec(`git commit -m "${commitMessage}"`);
     await exec(`git push -u origin "${branchName}" --force`);
   }
@@ -123,22 +130,6 @@ export class GH {
       githubOrg,
     });
 
-    if (dryRun) {
-      updatedImportMap = updateImportMap({
-        cdnBasePath,
-        importMap,
-        qmfeNamespace,
-        qmfeId,
-        version,
-        qmfeModules,
-        hasSubmodules,
-        dryRun,
-      });
-      core.info("[dry-run] import-map.json updated");
-      core.info(updatedImportMap);
-      return;
-    }
-
     await this.configureGitUser();
     await this.checkoutBranch(HEAD_BRANCH);
 
@@ -158,7 +149,14 @@ export class GH {
     await this.commitChanges(GIT_MSG, HEAD_BRANCH);
 
     try {
-      await this.closeOlderPullRequests(githubOrg, githubRepo, GIT_MSG);
+      if (dryRun) {
+        await this.closeOlderPullRequests(githubOrg, githubRepo, GIT_MSG);
+      }
+      core.info(
+        `${
+          dryRun ? "[dry-run] " : " "
+        }Closing older pull requests in repo "${githubOrg}/${githubRepo}"`
+      );
 
       // CLI Needs it to be set, being explicity here but this can probably be omitted
       // since it reads from the env anyways
@@ -182,10 +180,14 @@ export class GH {
       //   base: "main",
       // })
 
-      core.info(`Executing: ${createPullRequestCommand}`);
-      await exec(createPullRequestCommand);
+      core.info(
+        `${dryRun ? "[dry-run] " : " "}Executing: ${createPullRequestCommand}`
+      );
+      if (!dryRun) {
+        await exec(createPullRequestCommand);
+      }
     } catch (err) {
-      core.error(`Could not create PR. See output.`);
+      core.error("Could not create PR. See output.");
     } finally {
       process.env.GITHUB_TOKEN = undefined;
     }
