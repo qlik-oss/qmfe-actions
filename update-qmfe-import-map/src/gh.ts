@@ -67,7 +67,7 @@ export class GH {
   async commitChanges(commitMessage: string, branchName: string) {
     await exec("git add import-map.json");
     await exec(`git commit -m "${commitMessage}"`);
-    await exec(`git push -u origin "${branchName}" --force-with-lease`);
+    await exec(`git push -u origin "${branchName}" --force`);
   }
 
   async closeOlderPullRequests(
