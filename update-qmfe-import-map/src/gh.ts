@@ -148,10 +148,9 @@ export class GH {
     core.info("import-map.json updated");
     core.info(updatedImportMap);
 
-    await this.commitChanges(GIT_MSG, HEAD_BRANCH);
-
     try {
-      if (dryRun) {
+      if (!dryRun) {
+        await this.commitChanges(GIT_MSG, HEAD_BRANCH);
         await this.closeOlderPullRequests(githubOrg, githubRepo, GIT_MSG);
       }
       core.info(

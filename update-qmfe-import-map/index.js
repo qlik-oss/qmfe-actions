@@ -8016,9 +8016,9 @@ var GH = class {
       });
       core3.info("import-map.json updated");
       core3.info(updatedImportMap);
-      yield this.commitChanges(GIT_MSG, HEAD_BRANCH);
       try {
-        if (dryRun) {
+        if (!dryRun) {
+          yield this.commitChanges(GIT_MSG, HEAD_BRANCH);
           yield this.closeOlderPullRequests(githubOrg, githubRepo, GIT_MSG);
         }
         core3.info(
