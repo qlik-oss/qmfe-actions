@@ -16,6 +16,7 @@ async function run(): Promise<void> {
     const githubToken = core.getInput("github-token");
     const githubOrg = core.getInput("github-org");
     const githubRepo = core.getInput("github-repo");
+    const githubBranch = core.getInput("github-branch");
     const gitUsername: string | undefined = core.getInput("git-username");
     const gitEmail: string | undefined = core.getInput("git-email");
     const version = readVersionInput(core.getInput("version"));
@@ -35,6 +36,7 @@ async function run(): Promise<void> {
       githubToken,
       githubOrg,
       githubRepo,
+      githubBranch,
       gitUsername,
       gitEmail,
       version,
