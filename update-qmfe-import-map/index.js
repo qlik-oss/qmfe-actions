@@ -20,26 +20,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var __async = (__this, __arguments, generator) => {
-  return new Promise((resolve, reject) => {
-    var fulfilled = (value) => {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    };
-    var rejected = (value) => {
-      try {
-        step(generator.throw(value));
-      } catch (e) {
-        reject(e);
-      }
-    };
-    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-    step((generator = generator.apply(__this, __arguments)).next());
-  });
-};
 
 // node_modules/@actions/core/lib/utils.js
 var require_utils = __commonJS({
@@ -1689,6 +1669,87 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
   }
 });
 
+// node_modules/dotenv/lib/main.js
+var require_main = __commonJS({
+  "node_modules/dotenv/lib/main.js"(exports, module2) {
+    var fs = require("fs");
+    var path = require("path");
+    var os = require("os");
+    var LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg;
+    function parse(src) {
+      const obj = {};
+      let lines = src.toString();
+      lines = lines.replace(/\r\n?/mg, "\n");
+      let match;
+      while ((match = LINE.exec(lines)) != null) {
+        const key = match[1];
+        let value = match[2] || "";
+        value = value.trim();
+        const maybeQuote = value[0];
+        value = value.replace(/^(['"`])([\s\S]*)\1$/mg, "$2");
+        if (maybeQuote === '"') {
+          value = value.replace(/\\n/g, "\n");
+          value = value.replace(/\\r/g, "\r");
+        }
+        obj[key] = value;
+      }
+      return obj;
+    }
+    function _log(message) {
+      console.log(`[dotenv][DEBUG] ${message}`);
+    }
+    function _resolveHome(envPath) {
+      return envPath[0] === "~" ? path.join(os.homedir(), envPath.slice(1)) : envPath;
+    }
+    function config(options) {
+      let dotenvPath = path.resolve(process.cwd(), ".env");
+      let encoding = "utf8";
+      const debug = Boolean(options && options.debug);
+      const override = Boolean(options && options.override);
+      if (options) {
+        if (options.path != null) {
+          dotenvPath = _resolveHome(options.path);
+        }
+        if (options.encoding != null) {
+          encoding = options.encoding;
+        }
+      }
+      try {
+        const parsed = DotenvModule.parse(fs.readFileSync(dotenvPath, { encoding }));
+        Object.keys(parsed).forEach(function(key) {
+          if (!Object.prototype.hasOwnProperty.call(process.env, key)) {
+            process.env[key] = parsed[key];
+          } else {
+            if (override === true) {
+              process.env[key] = parsed[key];
+            }
+            if (debug) {
+              if (override === true) {
+                _log(`"${key}" is already defined in \`process.env\` and WAS overwritten`);
+              } else {
+                _log(`"${key}" is already defined in \`process.env\` and was NOT overwritten`);
+              }
+            }
+          }
+        });
+        return { parsed };
+      } catch (e) {
+        if (debug) {
+          _log(`Failed to load ${dotenvPath} ${e.message}`);
+        }
+        return { error: e };
+      }
+    }
+    var DotenvModule = {
+      config,
+      parse
+    };
+    module2.exports.config = DotenvModule.config;
+    module2.exports.parse = DotenvModule.parse;
+    module2.exports = DotenvModule;
+  }
+});
+
 // node_modules/@actions/io/lib/io-util.js
 var require_io_util = __commonJS({
   "node_modules/@actions/io/lib/io-util.js"(exports) {
@@ -3106,7 +3167,7 @@ var require_dist_node2 = __commonJS({
     }
     function expand(template, context) {
       var operators = ["+", "#", ".", "/", ";", "?", "&"];
-      return template.replace(/\{([^\{\}]+)\}|([^\{\}]+)/g, function(_, expression, literal) {
+      return template.replace(/\{([^\{\}]+)\}|([^\{\}]+)/g, function(_2, expression, literal) {
         if (expression) {
           let operator = "";
           const values = [];
@@ -7818,6 +7879,7 @@ var require_dist_node12 = __commonJS({
 
 // src/index.ts
 var core4 = __toESM(require_core());
+var _ = __toESM(require_main());
 
 // src/util.ts
 var core = __toESM(require_core());
@@ -7914,178 +7976,167 @@ var GH = class {
       userAgent: "qlik-oss/qmfe-actions"
     });
   }
-  configureGitUser() {
-    return __async(this, null, function* () {
-      const { gitUsername, gitEmail } = this.opts;
-      if (gitUsername && gitEmail) {
-        yield (0, import_exec.exec)(`git config user.name "${gitUsername}"`);
-        yield (0, import_exec.exec)(`git config user.email "${gitEmail}"`);
-      }
-    });
+  async configureGitUser() {
+    const { gitUsername, gitEmail } = this.opts;
+    if (gitUsername && gitEmail) {
+      await (0, import_exec.exec)(`git config user.name "${gitUsername}"`);
+      await (0, import_exec.exec)(`git config user.email "${gitEmail}"`);
+    }
   }
-  checkoutBranch(branchName) {
-    return __async(this, null, function* () {
+  async checkoutBranch(branchName) {
+    try {
+      const code = await (0, import_exec.exec)(`git checkout -b "${branchName}"`);
+      if (code !== 0) {
+        await (0, import_exec.exec)(`git checkout "${branchName}"`);
+      }
+    } catch (err) {
+      core3.info(`Error creating new branch: ${err}`);
+      core3.info("Checking out the existing branch instead");
       try {
-        const code = yield (0, import_exec.exec)(`git checkout -b "${branchName}"`);
-        if (code !== 0) {
-          yield (0, import_exec.exec)(`git checkout "${branchName}"`);
-        }
-      } catch (err) {
-        core3.info(`Error creating new branch: ${err}`);
-        core3.info("Checking out the existing branch instead");
-        try {
-          yield (0, import_exec.exec)(`git checkout "${branchName}"`);
-          yield (0, import_exec.exec)("git fetch");
-          yield (0, import_exec.exec)("git reset --hard origin/main");
-        } catch (err2) {
-          core3.info(`Could not use branch ${branchName}`);
-        }
+        await (0, import_exec.exec)(`git checkout "${branchName}"`);
+        await (0, import_exec.exec)("git fetch");
+        await (0, import_exec.exec)("git reset --hard origin/main");
+      } catch (err2) {
+        core3.info(`Could not use branch ${branchName}`);
       }
-    });
+    }
   }
-  commitChanges(commitMessage, branchName) {
-    return __async(this, null, function* () {
-      yield (0, import_exec.exec)("git add import-map.json");
-      yield (0, import_exec.exec)(`git commit -m "${commitMessage}"`);
-      yield (0, import_exec.exec)(`git push -u origin "${branchName}" --force`);
-    });
+  async commitChanges(commitMessage, branchName) {
+    await (0, import_exec.exec)("git add import-map.json");
+    await (0, import_exec.exec)(`git commit -m "${commitMessage}"`);
+    await (0, import_exec.exec)(`git push -u origin "${branchName}" --force`);
   }
-  closeOlderPullRequests(githubOrg, githubRepo, currentPRTitle) {
-    return __async(this, null, function* () {
-      const { data: openPRs } = yield this.octokit.pulls.list({
-        owner: githubOrg,
-        repo: githubRepo,
-        state: "open"
-      });
-      const regex = new RegExp(
-        `chore\\(release\\): update @${this.opts.qmfeNamespace}/${this.opts.qmfeId} to \\d+.\\d+.\\d+$`
+  async closeOlderPullRequests(githubOrg, githubRepo, currentPRTitle) {
+    const { data: openPRs } = await this.octokit.pulls.list({
+      owner: githubOrg,
+      repo: githubRepo,
+      state: "open"
+    });
+    const regex = new RegExp(
+      `chore\\(release\\): update @${this.opts.qmfeNamespace}/${this.opts.qmfeId} to \\d+.\\d+.\\d+$`
+    );
+    const targets = openPRs.map(({ title, head }) => {
+      if (title.match(regex) && title !== currentPRTitle) {
+        core3.info(`Matched on ${title}`);
+        return (0, import_exec.exec)(`git push origin --delete ${head.ref}`).catch((err) => {
+          core3.info(`Could not delete branch '${head.ref}': ${err}`);
+        });
+      }
+      return null;
+    }).filter(Boolean);
+    try {
+      await Promise.all(targets);
+    } catch (err) {
+      core3.info(JSON.stringify(err));
+    }
+  }
+  async createPullRequest() {
+    const {
+      cdnBasePath,
+      qmfeModules,
+      qmfeId,
+      repo,
+      qmfeNamespace,
+      version,
+      hasSubmodules,
+      githubToken,
+      githubTeam,
+      githubOrg,
+      githubRepo,
+      githubBranch,
+      dryRun
+    } = this.opts;
+    let updatedImportMap;
+    const componentName = `@${qmfeNamespace}/${qmfeId}`;
+    const importMap = readImportMap();
+    const HEAD_BRANCH = `${componentName}-integration-${version}`;
+    const GIT_MSG = `chore(release): update ${componentName} to ${version}`;
+    const PR_BODY = templatePullRequestBody({
+      qmfeId,
+      repo,
+      newVersion: version,
+      githubOrg
+    });
+    await this.configureGitUser();
+    await this.checkoutBranch(HEAD_BRANCH);
+    updatedImportMap = updateImportMap({
+      cdnBasePath,
+      importMap,
+      qmfeNamespace,
+      qmfeId,
+      version,
+      qmfeModules,
+      hasSubmodules
+    });
+    core3.info("import-map.json updated");
+    core3.info(updatedImportMap);
+    try {
+      if (!dryRun) {
+        await this.commitChanges(GIT_MSG, HEAD_BRANCH);
+        await this.closeOlderPullRequests(githubOrg, githubRepo, GIT_MSG);
+      }
+      core3.info(
+        `${dryRun ? "[dry-run] " : " "}Closing older pull requests in repo "${githubOrg}/${githubRepo}"`
       );
-      const targets = openPRs.map(({ title, head }) => {
-        if (title.match(regex) && title !== currentPRTitle) {
-          core3.info(`Matched on ${title}`);
-          return (0, import_exec.exec)(`git push origin --delete ${head.ref}`).catch((err) => {
-            core3.info(`Could not delete branch '${head.ref}': ${err}`);
-          });
-        }
-      }).filter(Boolean);
-      try {
-        yield Promise.all(targets);
-      } catch (err) {
-        core3.info(JSON.stringify(err));
+      process.env["GITHUB_TOKEN"] = githubToken;
+      const createPullRequestCommand = `gh pr create       --title "${GIT_MSG}"       --body "${PR_BODY}"       --repo="${githubOrg}/${githubRepo}"       --reviewer "${githubTeam}"       --base "${githubBranch}"       --head "${HEAD_BRANCH}"`;
+      core3.info(
+        `${dryRun ? "[dry-run] " : " "}Executing: ${createPullRequestCommand}`
+      );
+      if (!dryRun) {
+        await (0, import_exec.exec)(createPullRequestCommand);
       }
-    });
-  }
-  createPullRequest() {
-    return __async(this, null, function* () {
-      const {
-        cdnBasePath,
-        qmfeModules,
-        qmfeId,
-        repo,
-        qmfeNamespace,
-        version,
-        hasSubmodules,
-        githubToken,
-        githubTeam,
-        githubOrg,
-        githubRepo,
-        githubBranch,
-        dryRun
-      } = this.opts;
-      let updatedImportMap;
-      const componentName = `@${qmfeNamespace}/${qmfeId}`;
-      const importMap = readImportMap();
-      const HEAD_BRANCH = `${componentName}-integration-${version}`;
-      const GIT_MSG = `chore(release): update ${componentName} to ${version}`;
-      const PR_BODY = templatePullRequestBody({
-        qmfeId,
-        repo,
-        newVersion: version,
-        githubOrg
-      });
-      yield this.configureGitUser();
-      yield this.checkoutBranch(HEAD_BRANCH);
-      updatedImportMap = updateImportMap({
-        cdnBasePath,
-        importMap,
-        qmfeNamespace,
-        qmfeId,
-        version,
-        qmfeModules,
-        hasSubmodules
-      });
-      core3.info("import-map.json updated");
-      core3.info(updatedImportMap);
-      try {
-        if (!dryRun) {
-          yield this.commitChanges(GIT_MSG, HEAD_BRANCH);
-          yield this.closeOlderPullRequests(githubOrg, githubRepo, GIT_MSG);
-        }
-        core3.info(
-          `${dryRun ? "[dry-run] " : " "}Closing older pull requests in repo "${githubOrg}/${githubRepo}"`
-        );
-        process.env.GITHUB_TOKEN = githubToken;
-        const createPullRequestCommand = `gh pr create       --title "${GIT_MSG}"       --body "${PR_BODY}"       --repo="${githubOrg}/${githubRepo}"       --reviewer "${githubTeam}"       --base "${githubBranch}"       --head "${HEAD_BRANCH}"`;
-        core3.info(
-          `${dryRun ? "[dry-run] " : " "}Executing: ${createPullRequestCommand}`
-        );
-        if (!dryRun) {
-          yield (0, import_exec.exec)(createPullRequestCommand);
-        }
-      } catch (err) {
-        core3.error("Could not create PR. See output.");
-      } finally {
-        process.env.GITHUB_TOKEN = void 0;
-      }
-    });
+    } catch (err) {
+      core3.error("Could not create PR. See output.");
+    } finally {
+      process.env["GITHUB_TOKEN"] = void 0;
+    }
   }
 };
 
 // src/index.ts
-function run() {
-  return __async(this, null, function* () {
-    try {
-      const cdnBasePath = normalizeBasePath(core4.getInput("cdn-base-path"));
-      const dryRun = core4.getInput("dry-run") === "true";
-      const qmfeNamespace = core4.getInput("namespace") || core4.getInput("qmfe-namespace") || "qmfe";
-      const qmfeId = core4.getInput("qmfe-id");
-      const repo = core4.getInput("repo");
-      const githubTeam = core4.getInput("github-team");
-      const githubToken = core4.getInput("github-token");
-      const githubOrg = core4.getInput("github-org");
-      const githubRepo = core4.getInput("github-repo");
-      const githubBranch = core4.getInput("github-branch");
-      const gitUsername = core4.getInput("git-username");
-      const gitEmail = core4.getInput("git-email");
-      const version = readVersionInput(core4.getInput("version"));
-      const qmfeModules = parseModulesInput(
-        core4.getInput("qmfe-components") || core4.getInput("qmfe-modules")
-      );
-      const hasSubmodules = core4.getInput("qmfe-submodules") === "true";
-      const gh = new GH({
-        cdnBasePath,
-        qmfeModules,
-        qmfeNamespace,
-        qmfeId,
-        repo,
-        githubTeam,
-        githubToken,
-        githubOrg,
-        githubRepo,
-        githubBranch,
-        gitUsername,
-        gitEmail,
-        version,
-        hasSubmodules,
-        dryRun
-      });
-      yield gh.createPullRequest();
-      core4.info(dryRun ? "[Dry run] Success!" : "Success!");
-    } catch (error3) {
-      const message = error3 instanceof Error ? error3.message : "An unknown error occurred.";
-      core4.setFailed(message);
-    }
-  });
+async function run() {
+  try {
+    const cdnBasePath = normalizeBasePath(core4.getInput("cdn-base-path"));
+    const dryRun = core4.getInput("dry-run") === "true";
+    const qmfeNamespace = core4.getInput("namespace") || core4.getInput("qmfe-namespace") || "qmfe";
+    const qmfeId = core4.getInput("qmfe-id");
+    const repo = core4.getInput("repo");
+    const githubTeam = core4.getInput("github-team");
+    const githubToken = core4.getInput("github-token");
+    const githubOrg = core4.getInput("github-org");
+    const githubRepo = core4.getInput("github-repo");
+    const githubBranch = core4.getInput("github-branch");
+    const gitUsername = core4.getInput("git-username");
+    const gitEmail = core4.getInput("git-email");
+    const version = readVersionInput(core4.getInput("version"));
+    const qmfeModules = parseModulesInput(
+      core4.getInput("qmfe-components") || core4.getInput("qmfe-modules")
+    );
+    const hasSubmodules = core4.getInput("qmfe-submodules") === "true";
+    const gh = new GH({
+      cdnBasePath,
+      qmfeModules,
+      qmfeNamespace,
+      qmfeId,
+      repo,
+      githubTeam,
+      githubToken,
+      githubOrg,
+      githubRepo,
+      githubBranch,
+      gitUsername,
+      gitEmail,
+      version,
+      hasSubmodules,
+      dryRun
+    });
+    await gh.createPullRequest();
+    core4.info(dryRun ? "[Dry run] Success!" : "Success!");
+  } catch (error3) {
+    const message = error3 instanceof Error ? error3.message : "An unknown error occurred.";
+    core4.setFailed(message);
+  }
 }
 run();
 /*!

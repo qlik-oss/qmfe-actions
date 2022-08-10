@@ -94,6 +94,7 @@ export class GH {
             core.info(`Could not delete branch '${head.ref}': ${err}`);
           });
         }
+        return null;
       })
       .filter(Boolean);
 
@@ -162,7 +163,7 @@ export class GH {
       // CLI Needs it to be set, being explicit here but this can probably be omitted
       // since it reads from the env anyways
       // DO NOT LOG THIS. EVER.
-      process.env.GITHUB_TOKEN = githubToken;
+      process.env["GITHUB_TOKEN"] = githubToken;
 
       const createPullRequestCommand = `gh pr create \
       --title "${GIT_MSG}" \
@@ -190,7 +191,7 @@ export class GH {
     } catch (err) {
       core.error("Could not create PR. See output.");
     } finally {
-      process.env.GITHUB_TOKEN = undefined;
+      process.env["GITHUB_TOKEN"] = undefined;
     }
   }
 }
