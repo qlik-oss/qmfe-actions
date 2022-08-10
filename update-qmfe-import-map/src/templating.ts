@@ -3,7 +3,7 @@ import * as core from "@actions/core";
 type PRBodyTemplateArgs = {
   newVersion: string;
   qmfeId: string;
-  repo?: string;
+  repo?: string | undefined;
   githubOrg: string;
 };
 
