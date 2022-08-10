@@ -14,6 +14,7 @@ type Options = {
   githubToken: string;
   githubOrg: string;
   githubRepo: string;
+  githubBranch: string;
   gitUsername?: string;
   gitEmail?: string;
   version: string;
@@ -116,6 +117,7 @@ export class GH {
       githubTeam,
       githubOrg,
       githubRepo,
+      githubBranch,
       dryRun,
     } = this.opts;
     let updatedImportMap: string;
@@ -146,10 +148,9 @@ export class GH {
     core.info("import-map.json updated");
     core.info(updatedImportMap);
 
-    await this.commitChanges(GIT_MSG, HEAD_BRANCH);
-
     try {
-      if (dryRun) {
+      if (!dryRun) {
+        await this.commitChanges(GIT_MSG, HEAD_BRANCH);
         await this.closeOlderPullRequests(githubOrg, githubRepo, GIT_MSG);
       }
       core.info(
@@ -158,7 +159,7 @@ export class GH {
         }Closing older pull requests in repo "${githubOrg}/${githubRepo}"`
       );
 
-      // CLI Needs it to be set, being explicity here but this can probably be omitted
+      // CLI Needs it to be set, being explicit here but this can probably be omitted
       // since it reads from the env anyways
       // DO NOT LOG THIS. EVER.
       process.env.GITHUB_TOKEN = githubToken;
@@ -168,7 +169,7 @@ export class GH {
       --body "${PR_BODY}" \
       --repo="${githubOrg}/${githubRepo}" \
       --reviewer "${githubTeam}" \
-      --base "main" \
+      --base "${githubBranch}" \
       --head "${HEAD_BRANCH}"`;
 
       // This needs a separate call to add reviewers
@@ -177,7 +178,7 @@ export class GH {
       //   repo: githubRepo,
       //   title: GIT_MSG,
       //   head: HEAD_BRANCH,
-      //   base: "main",
+      //   base: githubBranch,
       // })
 
       core.info(

@@ -39,6 +39,10 @@ inputs:
   github-repo:
     description: "The GitHub repository containing `import-map.json`"
     required: true
+  github-branch:
+    description: "Target branch of the github-repo. Default is 'main'"
+    required: false
+    default: main
   git-username:
     description: "Set the git username for the commits made by this action"
     required: false

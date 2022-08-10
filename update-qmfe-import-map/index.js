@@ -7989,6 +7989,7 @@ var GH = class {
         githubTeam,
         githubOrg,
         githubRepo,
+        githubBranch,
         dryRun
       } = this.opts;
       let updatedImportMap;
@@ -8015,16 +8016,16 @@ var GH = class {
       });
       core3.info("import-map.json updated");
       core3.info(updatedImportMap);
-      yield this.commitChanges(GIT_MSG, HEAD_BRANCH);
       try {
-        if (dryRun) {
+        if (!dryRun) {
+          yield this.commitChanges(GIT_MSG, HEAD_BRANCH);
           yield this.closeOlderPullRequests(githubOrg, githubRepo, GIT_MSG);
         }
         core3.info(
           `${dryRun ? "[dry-run] " : " "}Closing older pull requests in repo "${githubOrg}/${githubRepo}"`
         );
         process.env.GITHUB_TOKEN = githubToken;
-        const createPullRequestCommand = `gh pr create       --title "${GIT_MSG}"       --body "${PR_BODY}"       --repo="${githubOrg}/${githubRepo}"       --reviewer "${githubTeam}"       --base "main"       --head "${HEAD_BRANCH}"`;
+        const createPullRequestCommand = `gh pr create       --title "${GIT_MSG}"       --body "${PR_BODY}"       --repo="${githubOrg}/${githubRepo}"       --reviewer "${githubTeam}"       --base "${githubBranch}"       --head "${HEAD_BRANCH}"`;
         core3.info(
           `${dryRun ? "[dry-run] " : " "}Executing: ${createPullRequestCommand}`
         );
@@ -8053,6 +8054,7 @@ function run() {
       const githubToken = core4.getInput("github-token");
       const githubOrg = core4.getInput("github-org");
       const githubRepo = core4.getInput("github-repo");
+      const githubBranch = core4.getInput("github-branch");
       const gitUsername = core4.getInput("git-username");
       const gitEmail = core4.getInput("git-email");
       const version = readVersionInput(core4.getInput("version"));
@@ -8070,6 +8072,7 @@ function run() {
         githubToken,
         githubOrg,
         githubRepo,
+        githubBranch,
         gitUsername,
         gitEmail,
         version,

@@ -2,7 +2,7 @@
 
 This action performs an update to bump a component in the `import-map.json` file which serves as a manifest for micro-frontends.
 
-**NOTE:** For this action to work correctly, `import-map.json` needs to be in the current working directory.
+> **Note** for this action to work correctly, `import-map.json` needs to be in the current working directory.
 
 ## Developing
 
