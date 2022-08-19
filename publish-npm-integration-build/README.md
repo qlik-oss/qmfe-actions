@@ -10,6 +10,8 @@ Publishes an integration (pre-release) npm package to the configured package reg
 | `build-script`  | The full command to build the projects NPM package.                                                       | **FALSE** | `""`      |
 | `enforce-types` | Whether to enforce the inclusion of type declarations in the package                                      | **FALSE** | `"true"`  |
 | `dry-run`       | Skips the actual publishing steps, mainly for testing the action                                          | **FALSE** | `"false"` |
+| `version`       | Integration version of the npm build                                          | **FALSE** | `""` |
+
 
 ## Example usage
 

@@ -17,6 +17,10 @@ inputs:
     description: "Skips the actual publishing steps, mainly for testing the action"
     required: false
     default: "false"
+  version:
+    description: "Integration version of the npm build"
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -24,8 +28,13 @@ runs:
     - name: Generate integration version value
       shell: bash
       run: |
-        BUILD_ID=$(date +%s)
-        VER=$(node -e "console.log(require('./package.json').version.concat('-$BUILD_ID'))")
+        if [ ${{ inputs.version }} == "" ]; then
+            BUILD_ID=$(date +%s)
+            VER=$(node -e "console.log(require('./package.json').version.concat('-$BUILD_ID'))")
+          else
+            VER=${{ inputs.version }}
+        fi
+        
         echo "$VER"
         if (echo $VER | egrep -- '-[0-9]+$' 1> /dev/null); then
           npm version $VER --no-git-tag-version
