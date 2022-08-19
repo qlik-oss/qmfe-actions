@@ -38,7 +38,7 @@ runs:
         fi
         
         echo "$VER"
-        if (echo $VER | egrep -- '-[0-9]+$' 1> /dev/null); then
+        if (echo $VER | egrep -- '-[0-9a-z.]+$' 1> /dev/null); then
           npm version $VER --no-git-tag-version
         fi
 
