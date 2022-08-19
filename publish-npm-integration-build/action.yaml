@@ -28,10 +28,12 @@ runs:
     - name: Generate integration version value
       shell: bash
       run: |
-        if [ ${{ inputs.version }} == "" ]; then
+        if [ -z ${{ inputs.version }} ]; then
+            echo "empty"
             BUILD_ID=$(date +%s)
             VER=$(node -e "console.log(require('./package.json').version.concat('-$BUILD_ID'))")
           else
+            echo "non-empty"
             VER=${{ inputs.version }}
         fi
         
