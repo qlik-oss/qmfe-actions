@@ -21,6 +21,8 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # Version logic source: https://github.com/qlik-oss/ci-tools/tree/master/action-version
+    # NOTE:  Use ci-tools action-version directly when possible (check for support in using actions in these composite actions)
     - name: Generate integration version value
       shell: bash
       run: |
