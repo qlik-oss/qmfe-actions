@@ -11,7 +11,6 @@ Publishes an integration (pre-release) npm package to the configured package reg
 | `enforce-types` | Whether to enforce the inclusion of type declarations in the package                                      | **FALSE** | `"true"`  |
 | `dry-run`       | Skips the actual publishing steps, mainly for testing the action                                          | **FALSE** | `"false"` |
 
-
 ## Example usage
 
 Add this to your workflow that runs on PRs.
