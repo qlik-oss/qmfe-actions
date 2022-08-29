@@ -28,7 +28,6 @@ runs:
       run: |
         set -o pipefail
         if [[ "${{ inputs.dry-run }}" = "true" ]]; then
-          npm publish ${{ inputs.dist-folder }} --dry-run --ignore-script --tag next
           VER="0.0.0-test"
         else
           _sha=${_sha:=$SHA}
