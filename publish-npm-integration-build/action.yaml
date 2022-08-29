@@ -56,11 +56,11 @@ runs:
               VER=${GITHUB_REF#*/v}
               RELEASE_TAG="1"
           fi
-        fi
 
-        echo "Set version: ${VER}"
-        if (echo $VER | egrep -- '-[0-9a-z.]+$' 1> /dev/null); then
-          npm version $VER --no-git-tag-version
+          echo "Set version: ${VER}"
+          if (echo $VER | egrep -- '-[0-9a-z.]+$' 1> /dev/null); then
+            npm version $VER --no-git-tag-version
+          fi
         fi
 
     - name: Run build script
