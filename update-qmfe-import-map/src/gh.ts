@@ -58,7 +58,7 @@ export class GH {
         await exec(`git checkout "${branchName}"`);
         await exec("git fetch");
         await exec("git reset --hard origin/main");
-      } catch (err2) {
+      } catch {
         core.info(`Could not use branch ${branchName}`);
       }
     }
@@ -189,7 +189,11 @@ export class GH {
         await exec(createPullRequestCommand);
       }
     } catch (err) {
-      core.error("Could not create PR. See output.");
+      throw new Error(
+        `Could not create PR. See output. Error message: ${
+          (err as Error).message
+        }`
+      );
     } finally {
       process.env["GITHUB_TOKEN"] = undefined;
     }
