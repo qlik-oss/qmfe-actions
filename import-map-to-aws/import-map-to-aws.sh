@@ -187,4 +187,4 @@ else
   fi
 fi
 
-echo "::set-output name=import-map-locked-state::$locked"
+echo "import-map-locked-state=$locked" >> $GITHUB_OUTPUT
