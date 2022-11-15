@@ -1,5 +1,7 @@
 # qmfe-actions
 
+> **Warning** DEPRECATED: Since GitHub Actions can reference private workflows, we've decided to move these to our private org.
+
 This repository contains custom actions used in the micro-frontend world.
 
 | Actions                                                                    | Description                                                          |
